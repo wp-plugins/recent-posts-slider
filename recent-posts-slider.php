@@ -36,7 +36,7 @@ add_action('publish_post','rps_publish_post');
 add_action('wp_print_styles', 'rps_add_style');
 add_action('wp_print_scripts', 'rps_add_script');
 
-add_shortcode('RPS', 'rps_show');
+add_shortcode('rps', 'rps_show');
 /** 
 *Set the default options while activating the pugin & create thumbnails of first image of all the posts
 */
