@@ -96,18 +96,25 @@ function rps_post_img_thumb($post_id = NULL ){
 	$width = get_option('rps_width');
 	$height = get_option('rps_height');
 	$post_per_slide = get_option('rps_post_per_slide');
+	$total_posts = get_option('rps_total_posts');
+	$category_ids = get_option('rps_category_ids');
+	$post_include_ids = get_option('rps_post_include_ids');
+	$post_exclude_ids = get_option('rps_post_exclude_ids');
 	
 	$set_img_width = ($width/$post_per_slide) - 12;
 	$set_img_height = $height - 54;
 	
 	if ( empty($post_id) ) {
 		$args = array(
-		    'numberposts'     => $total_posts,
-		    'offset'          => 0,
-		    'orderby'         => 'post_date',
-		    'order'           => 'DESC',
-		    'post_type'       => 'post',
-		    'post_status'     => 'publish' );
+			'numberposts'     => $total_posts,
+			'offset'          => 0,
+			'category'        => $category_ids,
+			'orderby'         => 'post_date',
+			'order'           => 'DESC',
+			'include'         => $post_include_ids,
+			'exclude'         => $post_exclude_ids,
+			'post_type'       => 'post',
+			'post_status'     => 'publish' );
 		$recent_posts = get_posts( $args );
 		if ( count($recent_posts)< $total_posts ) {
 			$total_posts	= count($recent_posts);
@@ -191,7 +198,9 @@ function rps_add_style() {
 
 /** Link the needed script */
 function rps_add_script() {
-	wp_enqueue_script('rps-jquery',WP_PLUGIN_URL.'/recent-posts-slider/js/jquery.min.js');
+	if ( !is_admin() ){
+		wp_enqueue_script('rps-jquery',WP_PLUGIN_URL.'/recent-posts-slider/js/jquery.min.js');
+	}
 }
 
 /** To show slider 
@@ -203,6 +212,10 @@ function rps_show() {
 	$post_per_slide = get_option('rps_post_per_slide');
 	$total_posts = get_option('rps_total_posts');
 	$slider_content = get_option('rps_slider_content');
+	$category_ids = get_option('rps_category_ids');
+	$post_include_ids = get_option('rps_post_include_ids');
+	$post_exclude_ids = get_option('rps_post_exclude_ids');
+	
 	$excerpt_length = '';
 	$excerpt_length = abs( (($width-40)/20) * (($height-55)/15) );
 	/*if ( ($width) > $height)
@@ -212,12 +225,15 @@ function rps_show() {
 	
 	$post_details = NULL;
 	$args = array(
-		    'numberposts'     => $total_posts,
-		    'offset'          => 0,
-		    'orderby'         => 'post_date',
-		    'order'           => 'DESC',
-		    'post_type'       => 'post',
-		    'post_status'     => 'publish' );
+			'numberposts'     => $total_posts,
+			'offset'          => 0,
+			'category'        => $category_ids,
+			'orderby'         => 'post_date',
+			'order'           => 'DESC',
+			'include'         => $post_include_ids,
+			'exclude'         => $post_exclude_ids,
+			'post_type'       => 'post',
+			'post_status'     => 'publish' );
 	$recent_posts = get_posts( $args );
 	
 	if ( count($recent_posts)< $total_posts ) {
@@ -239,7 +255,7 @@ function rps_show() {
 	}
 	
 	$upload_dir = wp_upload_dir();
-	$output .= '<!--Automatic Image Slider w/ CSS & jQuery-->';
+	$output .= '<!--Automatic Image Slider w/ CSS & jQuery with some customization-->';
 	$output .='<script type="text/javascript">jQuery.noConflict();
  // <![CDATA[
 jQuery(document).ready(function() {

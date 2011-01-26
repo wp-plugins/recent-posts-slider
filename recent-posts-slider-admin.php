@@ -25,6 +25,15 @@
 		$slider_content = $_POST['rps_slider_content'];
 		update_option('rps_slider_content', $slider_content);
 		
+		$category_ids = $_POST['rps_category_ids'];
+		update_option('rps_category_ids', $category_ids);
+		
+		$post_include_ids = $_POST['rps_post_include_ids'];
+		update_option('rps_post_include_ids', $post_include_ids);
+		
+		$post_exclude_ids = $_POST['rps_post_exclude_ids'];
+		update_option('rps_post_exclude_ids', $post_exclude_ids);
+		
 		if ( $slider_content== 1 )
 			rps_post_img_thumb();
 		?>
@@ -44,6 +53,9 @@
 		$post_per_slide = get_option('rps_post_per_slide');
 		$total_posts = get_option('rps_total_posts');
 		$slider_content = get_option('rps_slider_content');
+		$category_ids = get_option('rps_category_ids');
+		$post_include_ids = get_option('rps_post_include_ids');
+		$post_exclude_ids = get_option('rps_post_exclude_ids');
 	}
 ?>
 
@@ -75,9 +87,24 @@
 	<p>	
 		<?php _e("Slider content"); ?> 
 		<select name="rps_slider_content">
-			<option value="1" <?php if($slider_content==1){echo 'selected';} ?>>Show Picture &amp; description</option>
-			<option value="2" <?php if($slider_content==2){echo 'selected';} ?>>Show title &amp; description</option>
+			<option value="1" <?php if($slider_content==1){echo 'selected';} ?>>Show Post Thumbnails</option>
+			<option value="2" <?php if($slider_content==2){echo 'selected';} ?>>Show Excerpt</option>
 		</select>
+	</p>
+	<p>	
+		<?php _e("Category IDs"); ?> 
+		<input type="text" name="rps_category_ids" value="<?php echo $category_ids; ?>" size="40">
+		<?php _e(" ex : 1,2,3,-4 (Use negative id to exclude)" ); ?>
+	</p>
+	<p>	
+		<?php _e("Posts to include"); ?> 
+		<input type="text" name="rps_post_include_ids" value="<?php echo $post_include_ids; ?>" size="40">
+		<?php _e("Seperated by commas"); ?>
+	</p>
+	<p>	
+		<?php _e("Posts to exclude"); ?> 
+		<input type="text" name="rps_post_exclude_ids" value="<?php echo $post_exclude_ids; ?>" size="40">
+		<?php _e("Seperated by commas"); ?>
 	</p>
 	<p class="submit">
 	<input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e('Save Changes') ?>" />
