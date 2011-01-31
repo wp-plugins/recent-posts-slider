@@ -3,7 +3,7 @@ Contributors: nehagoel
 Tags: posts, recent, recent posts, recent post, scroll, slider, most recent, posts slider, most recent posts
 Requires at least: 2.9.1
 Tested up to: 3.0.4
-Stable tag: 0.2
+Stable tag: 0.3
 
 Recent posts slider displays your blog's recent posts using slider.
 
@@ -12,7 +12,7 @@ Recent posts slider displays your blog's recent posts using slider.
 Recent Posts slider displays your blog's recent posts either with excerpt or thumbnail image of first image of the post using slider.
 You can customize the slider in many ways (width, height, post per slide, no of posts to display & more).
 
-You have two options to embed it in your theme either using this code `<?php if (function_exists('rps_show')) echo rps_show(); ?>` or using shortcode '[rps]'.
+It creates the thumbnail of the first image from the post. If you want to create a thumbnail of a specific image add a custom field as rps_custom_thumb and specify image path as value.
 
 Check out the working demo at http://rps.eworksphere.com
 
@@ -34,10 +34,11 @@ Now go to **Settings** and then **Recent Posts Slider** to configure any options
 
 = How to use =
 
-In order to display the recent posts slider, you have two options
+In order to display the recent posts slider, you have three options
 
 1. Simply place `<?php if (function_exists('rps_show')) echo rps_show(); ?>` in your theme. 
 1. Add the shortcode '[rps]'.
+1. Using widget.
 
 == Frequently Asked Questions ==
 
@@ -53,6 +54,11 @@ Contact me at http://rps.eworksphere.com/contact
 1. Configuration page
 
 == Changelog ==
+
+= v0.3 =
+* Widget support is added.
+* Custom field is added to pull post image.
+* Jquery updated to latest version.
 
 = v0.2 =
 * Added more customization options for specific categories & posts.

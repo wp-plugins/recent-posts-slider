@@ -3,7 +3,7 @@
 Plugin Name: Recent Posts Slider
 Plugin URI: http://rps.eworksphere.com
 Description: Recent Posts Slider displays your blog's recent posts either with excerpt or thumbnail images using slider.
-Version: 0.2
+Version: 0.3
 Author: Neha Goel
 */
 
@@ -37,6 +37,10 @@ add_action('wp_print_styles', 'rps_add_style');
 add_action('wp_print_scripts', 'rps_add_script');
 
 add_shortcode('rps', 'rps_show');
+
+// register Rps widget
+add_action('widgets_init', create_function('', 'return register_widget("RpsWidget");'));
+
 /** 
 *Set the default options while activating the pugin & create thumbnails of first image of all the posts
 */
@@ -131,14 +135,20 @@ function rps_post_img_thumb($post_id = NULL ){
 	}
 	
 	foreach ( $post_details as $key_p=> $val_p ) {
-		$first_img_name = '';
-		$img_name='';
-		$first_img_src = '';
-		preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $val_p['post_content'], $matches);
 		
-		if ( count($matches) && isset($matches[1]) ) {
-			$first_img_name = $matches[1][0];
-		}	
+		$first_img_name = '';
+		$first_img_name = get_post_meta($val_p['post_ID'], 'rps_custom_thumb', true);
+		
+		if(empty($first_img_name)){
+			$img_name='';
+			$first_img_src = '';
+		
+			preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $val_p['post_content'], $matches);
+		
+			if ( count($matches) && isset($matches[1]) ) {
+				$first_img_name = $matches[1][0];
+			}	
+		}
 		
 		$img_files = get_children("post_parent=".$val_p['post_ID']."&post_type=attachment&post_mime_type=image");
 		
@@ -333,7 +343,7 @@ $output .= '<div id="rps">
 		for ( $i = 1; $i <= $total_posts; $i+=$post_per_slide ) {
 			$output .= '<div class="slide">';
 					for ( $j = 1; $j <= $post_per_slide; $j++ ) {
-						$output .= '<div class="col"><p class="post-title"><a href="'.$post_details[$p]['post_permalink'].'"><span>'.$post_details[$p]['post_title'].'</span></a></p></h4>';
+						$output .= '<div class="col"><p class="post-title"><a href="'.$post_details[$p]['post_permalink'].'"><span>'.$post_details[$p]['post_title'].'</span></a></p>';
 						if ( $slider_content == 2 ){
 							$output .= '<p class="slider-content">'.$post_details[$p]['post_excerpt'].'</p></div>';
 						}elseif ( $slider_content == 1 ){
@@ -363,8 +373,7 @@ $output .= '<div id="rps">
                 }
             $output .= '</DIV>
         </div><div class="rps-clr"></div>'; 
-	echo $output;
-	return;
+	return $output;
 }
 
 /** Create post excerpt manually
@@ -387,4 +396,42 @@ function create_excerpt( $post_content, $excerpt_length ){
 		return;
 	}
 }
+
+
+/**
+ * RpsWidget Class
+ */
+class RpsWidget extends WP_Widget {
+    /** constructor */
+    function RpsWidget() {
+        parent::WP_Widget(false, $name = 'Recent Posts Slider', array( 'description' => __( "Your blogs recent post using slider") ));	
+    }
+
+    /** @see WP_Widget::widget */
+    function widget($args, $instance) {		
+        extract( $args );
+        $title = apply_filters('widget_title', $instance['title']);
+	echo $before_widget;
+        if ( $title )
+		echo $before_title . $title . $after_title; 
+		if (function_exists('rps_show')) echo rps_show(); 
+		echo $after_widget; 
+    }
+
+    /** @see WP_Widget::update */
+    function update($new_instance, $old_instance) {				
+	$instance = $old_instance;
+	$instance['title'] = strip_tags($new_instance['title']);
+        return $instance;
+    }
+
+    /** @see WP_Widget::form */
+    function form($instance) {				
+        $title = esc_attr($instance['title']);
+        ?>
+            <p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" /></label></p>
+        <?php 
+    }
+
+} // class RpsWidget
 ?>
