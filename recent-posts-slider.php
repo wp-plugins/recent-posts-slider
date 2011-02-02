@@ -3,7 +3,7 @@
 Plugin Name: Recent Posts Slider
 Plugin URI: http://rps.eworksphere.com
 Description: Recent Posts Slider displays your blog's recent posts either with excerpt or thumbnail images using slider.
-Version: 0.3
+Version: 0.4
 Author: Neha Goel
 */
 
@@ -165,23 +165,24 @@ function rps_post_img_thumb($post_id = NULL ){
 			$upload_dir = wp_upload_dir();
 			
 			if ( $set_img_width > 0 && $set_img_height > 0 ){
-				$img_desc = image_make_intermediate_size($upload_dir['basedir'].'/'.$first_img_src,$set_img_width,$set_img_height,'true');
+				$img_file = image_resize($upload_dir['basedir'].'/'.$first_img_src,$set_img_width,$set_img_height,'true');
 			}
 			
-			if ( !empty($img_desc['file']) ) {
+			if ( !empty($img_file) ) {
 				if ( $rps_image_src = get_post_custom_values('_rps_img_src', $val_p['post_ID']) ) {
 					$old_wrp_img_src = $rps_image_src['0'];
-					$old_wrp_img_src."<br/>";
-					$new_wrp_img_src = trim($upload_dir['subdir'].'/'.$img_desc['file'],'/');
+					$new_wrp_img_src = substr($img_file, (strrpos($img_file, 'uploads/')));
+					$new_wrp_img_src = trim($new_wrp_img_src,'uploads/');
 					
 					if ( $old_wrp_img_src != $new_wrp_img_src ) {
-						if( is_file($old_wrp_img_src) ){	
-							@unlink($old_wrp_img_src);
+						$old_img_path = $upload_dir['basedir'].'/'.$old_wrp_img_src;
+						if( is_file($old_img_path) ){	
+							@unlink($old_img_path);
 						}			
 						update_post_meta($val_p['post_ID'], '_rps_img_src', $new_wrp_img_src);
 					}
 				} else {
-					add_post_meta($val_p['post_ID'], '_rps_img_src', trim($upload_dir['subdir'].'/'.$img_desc['file'],'/'));
+					add_post_meta($val_p['post_ID'], '_rps_img_src', $new_wrp_img_src);
 				}
 			}
 		}
@@ -348,8 +349,10 @@ $output .= '<div id="rps">
 							$output .= '<p class="slider-content">'.$post_details[$p]['post_excerpt'].'</p></div>';
 						}elseif ( $slider_content == 1 ){
 							$output .= '<p class="slider-content-img">';
-							if( !empty($post_details[$p]['post_first_img']['0']) )
-							$output .= '<a href="'.$post_details[$p]['post_permalink'].'"><center><img src="'.$upload_dir['baseurl'].'/'.$post_details[$p]['post_first_img']['0'].'" /></center></a>';
+							if( !empty($post_details[$p]['post_first_img']['0']) ){
+								$rps_img_src_path = $upload_dir['baseurl'].'/'.$post_details[$p]['post_first_img']['0'];
+								$output .= '<a href="'.$post_details[$p]['post_permalink'].'"><center><img src="'.$rps_img_src_path.'" /></center></a>';
+							}
 							$output .= '</p></div>';			
 						}	
 						$p++;
