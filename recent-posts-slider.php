@@ -172,10 +172,10 @@ function rps_post_img_thumb($post_id = NULL ){
 				if ( $rps_image_src = get_post_custom_values('_rps_img_src', $val_p['post_ID']) ) {
 					$old_wrp_img_src = $rps_image_src['0'];
 					$new_wrp_img_src = substr($img_file, (strrpos($img_file, 'uploads/')));
-					$new_wrp_img_src = trim($new_wrp_img_src,'uploads/');
+					$new_wrp_img_src = trim($new_wrp_img_src,'uploads');
 					
 					if ( $old_wrp_img_src != $new_wrp_img_src ) {
-						$old_img_path = $upload_dir['basedir'].'/'.$old_wrp_img_src;
+						$old_img_path = $upload_dir['basedir'].$old_wrp_img_src;
 						if( is_file($old_img_path) ){	
 							@unlink($old_img_path);
 						}			
@@ -350,7 +350,7 @@ $output .= '<div id="rps">
 						}elseif ( $slider_content == 1 ){
 							$output .= '<p class="slider-content-img">';
 							if( !empty($post_details[$p]['post_first_img']['0']) ){
-								$rps_img_src_path = $upload_dir['baseurl'].'/'.$post_details[$p]['post_first_img']['0'];
+								$rps_img_src_path = $upload_dir['baseurl'].$post_details[$p]['post_first_img']['0'];
 								$output .= '<a href="'.$post_details[$p]['post_permalink'].'"><center><img src="'.$rps_img_src_path.'" /></center></a>';
 							}
 							$output .= '</p></div>';			
