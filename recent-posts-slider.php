@@ -3,7 +3,7 @@
 Plugin Name: Recent Posts Slider
 Plugin URI: http://rps.eworksphere.com
 Description: Recent Posts Slider displays your blog's recent posts either with excerpt or thumbnail images using slider.
-Version: 0.4
+Version: 0.5
 Author: Neha Goel
 */
 
@@ -34,7 +34,7 @@ add_action('publish_post','rps_publish_post');
 
 //Add  the nedded styles & script
 add_action('wp_print_styles', 'rps_add_style');
-add_action('wp_print_scripts', 'rps_add_script');
+add_action('init', 'rps_add_script');
 
 add_shortcode('rps', 'rps_show');
 
@@ -82,7 +82,7 @@ function rps_activate() {
 */
 function rps_publish_post(){
 	$slider_content = get_option('rps_slider_content');
-	if ( $slider_content== 1 ) {
+	if ( $slider_content== 1 || $slider_content== 3) {
 		global $post;
 		rps_post_img_thumb( (int) $post->ID );
 	} else {
@@ -99,6 +99,7 @@ function rps_post_img_thumb($post_id = NULL ){
 	
 	$width = get_option('rps_width');
 	$height = get_option('rps_height');
+	$slider_content = get_option('rps_slider_content');
 	$post_per_slide = get_option('rps_post_per_slide');
 	$total_posts = get_option('rps_total_posts');
 	$category_ids = get_option('rps_category_ids');
@@ -106,6 +107,9 @@ function rps_post_img_thumb($post_id = NULL ){
 	$post_exclude_ids = get_option('rps_post_exclude_ids');
 	
 	$set_img_width = ($width/$post_per_slide) - 12;
+	if($slider_content == 3){
+		$set_img_width = (int)(($set_img_width/2) - 20);
+	}
 	$set_img_height = $height - 54;
 	
 	if ( empty($post_id) ) {
@@ -138,7 +142,7 @@ function rps_post_img_thumb($post_id = NULL ){
 		
 		$first_img_name = '';
 		$first_img_name = get_post_meta($val_p['post_ID'], 'rps_custom_thumb', true);
-		
+			
 		if(empty($first_img_name)){
 			$img_name='';
 			$first_img_src = '';
@@ -161,6 +165,7 @@ function rps_post_img_thumb($post_id = NULL ){
 				$first_img_src = $img_src;
 			}
 		}
+		
 		if( !empty($first_img_src) ){
 			$upload_dir = wp_upload_dir();
 			
@@ -169,16 +174,19 @@ function rps_post_img_thumb($post_id = NULL ){
 			}
 			
 			if ( !empty($img_file) ) {
+				$new_wrp_img_src = substr($img_file, (strrpos($img_file, 'uploads/')));
+				$new_wrp_img_src = trim($new_wrp_img_src,'uploads');
+				
 				if ( $rps_image_src = get_post_custom_values('_rps_img_src', $val_p['post_ID']) ) {
 					$old_wrp_img_src = $rps_image_src['0'];
-					$new_wrp_img_src = substr($img_file, (strrpos($img_file, 'uploads/')));
-					$new_wrp_img_src = trim($new_wrp_img_src,'uploads');
 					
 					if ( $old_wrp_img_src != $new_wrp_img_src ) {
 						$old_img_path = $upload_dir['basedir'].$old_wrp_img_src;
-						if( is_file($old_img_path) ){	
-							@unlink($old_img_path);
-						}			
+						if( !empty($old_wrp_img_src) ) {
+							if( is_file($old_img_path) ){	
+								@unlink($old_img_path);
+							}			
+						}
 						update_post_meta($val_p['post_ID'], '_rps_img_src', $new_wrp_img_src);
 					}
 				} else {
@@ -226,7 +234,16 @@ function rps_show() {
 	$category_ids = get_option('rps_category_ids');
 	$post_include_ids = get_option('rps_post_include_ids');
 	$post_exclude_ids = get_option('rps_post_exclude_ids');
+	$post_title_color = get_option('rps_post_title_color');
+	$slider_speed = get_option('rps_slider_speed');
+	$pagination_style = get_option('rps_pagination_style');
+	$excerpt_words = get_option('rps_excerpt_words');
 	
+	if ( empty($slider_speed) ) {
+		$slider_speed = 7000;
+	}else{
+		$slider_speed = $slider_speed * 1000;
+	}
 	$excerpt_length = '';
 	$excerpt_length = abs( (($width-40)/20) * (($height-55)/15) );
 	/*if ( ($width) > $height)
@@ -251,54 +268,66 @@ function rps_show() {
 		$total_posts	= count($recent_posts);
 	}
 	
+	if ( ($total_posts%$post_per_slide)==0 )
+		$paging  = $total_posts/$post_per_slide; 
+	else
+		$paging  = ($total_posts/$post_per_slide) + 1;  
+			
 	foreach ( $recent_posts as $key=>$val ) {
 		$post_details[$key]['post_title'] = $val->post_title;
 		$post_details[$key]['post_permalink'] = get_permalink($val->ID);
 		
 		if ( $slider_content == 2 ) {
 			if ( !empty($val->post_excerpt) ) 
-				$post_details[$key]['post_excerpt'] = create_excerpt($val->post_excerpt, $excerpt_length);
+				$post_details[$key]['post_excerpt'] = create_excerpt($val->post_excerpt, $excerpt_length, $post_details[$key]['post_permalink'], $excerpt_words);
 			else
-				$post_details[$key]['post_excerpt'] = create_excerpt($val->post_content, $excerpt_length);
+				$post_details[$key]['post_excerpt'] = create_excerpt($val->post_content, $excerpt_length, $post_details[$key]['post_permalink'], $excerpt_words);
 		} elseif ( $slider_content == 1 ) {
 			$post_details[$key]['post_first_img'] = get_post_meta($val->ID, '_rps_img_src');
+		}elseif ( $slider_content == 3 ) {
+			$post_details[$key]['post_first_img'] = get_post_meta($val->ID, '_rps_img_src');
+			if ( !empty($val->post_excerpt) ) 
+				$post_details[$key]['post_excerpt'] = create_excerpt($val->post_excerpt, ($excerpt_length/2)-10, $post_details[$key]['post_permalink'], $excerpt_words);
+			else
+				$post_details[$key]['post_excerpt'] = create_excerpt($val->post_content, ($excerpt_length/2)-10, $post_details[$key]['post_permalink'], $excerpt_words);
 		}
 	}
 	
 	$upload_dir = wp_upload_dir();
 	$output .= '<!--Automatic Image Slider w/ CSS & jQuery with some customization-->';
-	$output .='<script type="text/javascript">jQuery.noConflict();
- // <![CDATA[
-jQuery(document).ready(function() {
+	$output .='<script type="text/javascript">
+	$j = jQuery.noConflict();
+	$j(document).ready(function() {
 
 	//Set Default State of each portfolio piece
-	jQuery(".paging").show();
-	jQuery(".paging a:first").addClass("active");
+	$j("#rps .paging").show();
+	$j("#rps .paging a:first").addClass("active");
 	
-	jQuery(".slide").css({"width" : '.$width.'});
-	jQuery(".window").css({"width" : '.($width).'});
-	jQuery(".window").css({"height" : '.$height.'});
+	$j(".slide").css({"width" : '.$width.'});
+	$j("#rps .window").css({"width" : '.($width).'});
+	$j("#rps .window").css({"height" : '.$height.'});
 
-	jQuery(".col").css({"width" : '.(($width/$post_per_slide)-2).'});
-	jQuery(".col").css({"height" : '.($height-4).'});
+	$j("#rps .col").css({"width" : '.(($width/$post_per_slide)-2).'});
+	$j("#rps .col").css({"height" : '.($height-4).'});
+	$j("#rps .col p.post-title span").css({"color" : "#'.($post_title_color).'"});
 	
-	var imageWidth = jQuery(".window").width();
-	var imageSum = jQuery(".slider div").size();
-	var imageReelWidth = imageWidth * imageSum;
+	var imageWidth = $j("#rps .window").width();
+	//var imageSum = $j("#rps .slider div").size();
+	var imageReelWidth = imageWidth * '.$paging.';
 	
 	//Adjust the image reel to its new size
-	jQuery(".slider").css({"width" : imageReelWidth});
+	$j("#rps .slider").css({"width" : imageReelWidth});
 
 	//Paging + Slider Function
 	rotate = function(){	
 		var triggerID = $active.attr("rel") - 1; //Get number of times to slide
 		var sliderPosition = triggerID * imageWidth; //Determines the distance the image reel needs to slide
 
-		jQuery(".paging a").removeClass("active"); 
+		$j("#rps .paging a").removeClass("active"); 
 		$active.addClass("active");
 		
 		//Slider Animation
-		jQuery(".slider").animate({ 
+		$j("#rps .slider").animate({ 
 			left: -sliderPosition
 		}, 500 );
 		
@@ -307,26 +336,26 @@ jQuery(document).ready(function() {
 	//Rotation + Timing Event
 	rotateSwitch = function(){		
 		play = setInterval(function(){ //Set timer - this will repeat itself every 3 seconds
-			$active = jQuery(".paging a.active").next();
+			$active = $j("#rps .paging a.active").next();
 			if ( $active.length === 0) { //If paging reaches the end...
-				$active = jQuery(".paging a:first"); //go back to first
+				$active = $j("#rps .paging a:first"); //go back to first
 			}
 			rotate(); //Trigger the paging and slider function
-		}, 7000);
+		}, '.$slider_speed.');
 	};
 	
 	rotateSwitch(); //Run function on launch
 	
 	//On Hover
-	jQuery(".slider a").hover(function() {
+	$j("#rps .slider a").hover(function() {
 		clearInterval(play); //Stop the rotation
 	}, function() {
 		rotateSwitch(); //Resume rotation
 	});	
 	
 	//On Click
-	jQuery(".paging a").click(function() {	
-		$active = jQuery(this); //Activate the clicked paging
+	$j("#rps .paging a").click(function() {	
+		$active = $j(this); //Activate the clicked paging
 		//Reset Timer
 		clearInterval(play); //Stop the rotation
 		rotate(); //Trigger rotation immediately
@@ -334,7 +363,7 @@ jQuery(document).ready(function() {
 		return false; //Prevent browser jump to link anchor
 	});	
 });
-// ]]>
+
 </script>';
 
 $output .= '<div id="rps">
@@ -354,6 +383,14 @@ $output .= '<div id="rps">
 								$output .= '<a href="'.$post_details[$p]['post_permalink'].'"><center><img src="'.$rps_img_src_path.'" /></center></a>';
 							}
 							$output .= '</p></div>';			
+						}elseif ( $slider_content == 3 ){
+							$output .= '<p class="slider-content-both">';
+							if( !empty($post_details[$p]['post_first_img']['0']) || !empty($post_details[$p]['post_excerpt'])){
+								$rps_img_src_path = $upload_dir['baseurl'].$post_details[$p]['post_first_img']['0'];
+								$output .= '<a href="'.$post_details[$p]['post_permalink'].'"><img src="'.$rps_img_src_path.'" align="left" /></a>';
+								$output .= $post_details[$p]['post_excerpt'];
+							}
+							$output .= '</p></div>';			
 						}	
 						$p++;
 						if ( $p == $total_posts )
@@ -366,13 +403,12 @@ $output .= '<div id="rps">
                 </div>
             </div>
             <div class="paging">';
-		if ( ($total_posts%$post_per_slide)==0 )
-			$paging  = $total_posts/$post_per_slide; 
-		else
-			$paging  = ($total_posts/$post_per_slide) + 1;  
-		
 		for ( $p = 1; $p <= $paging; $p++ ) {
-			$output .= '<a href="#" rel="'.$p.'">'.$p.'</a>';
+			if( $pagination_style == '2'){
+				$output .= '<a href="#" rel="'.$p.'">&bull;</a>';
+			}else{
+				$output .= '<a href="#" rel="'.$p.'">'.$p.'</a>';
+			}
                 }
             $output .= '</DIV>
         </div><div class="rps-clr"></div>'; 
@@ -384,19 +420,32 @@ $output .= '<div id="rps">
  * @param $excerpt_length
  * @return post_excerpt or  void
 */
-function create_excerpt( $post_content, $excerpt_length ){
+function create_excerpt( $post_content, $excerpt_length, $post_permalink, $excerpt_words=NULL){
 	$post_excerpt = strip_shortcodes($post_content);
 	$post_excerpt = str_replace(']]>', ']]&gt;', $post_excerpt);
 	$post_excerpt = strip_tags($post_excerpt);
-	$post_excerpt_rps = substr( $post_excerpt, 0, $excerpt_length );
-	if ( !empty($post_excerpt_rps) ) {
-		if ( strlen($post_excerpt) > strlen($post_excerpt_rps) ){
-			$post_excerpt_rps =substr( $post_excerpt_rps, 0, strrpos($post_excerpt_rps,' '));
-			$post_excerpt_rps .= "...";
-		}	
-		return $post_excerpt_rps;
-	} else {
-		return;
+	
+	if( !empty($excerpt_words) ){	
+		if ( !empty($post_excerpt) ) {
+			$words = explode(' ', $post_excerpt, $excerpt_words );
+			array_pop($words);
+			array_push($words, ' <a href="'.$post_permalink.'">[more]</a>');
+			$post_excerpt_rps = implode(' ', $words);
+			return $post_excerpt_rps;
+		} else {
+			return;
+		}
+	}else{
+		$post_excerpt_rps = substr( $post_excerpt, 0, $excerpt_length );
+		if ( !empty($post_excerpt_rps) ) {
+			if ( strlen($post_excerpt) > strlen($post_excerpt_rps) ){
+				$post_excerpt_rps =substr( $post_excerpt_rps, 0, strrpos($post_excerpt_rps,' '));
+			}	
+			$post_excerpt_rps .= ' <a href="'.$post_permalink.'">[more]</a>';
+			return $post_excerpt_rps;
+		} else {
+			return;
+		}
 	}
 }
 

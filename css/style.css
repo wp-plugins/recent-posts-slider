@@ -98,6 +98,27 @@
 	text-align:center;
 }
 
+#rps .col p.slider-content-both{
+	position:relative;
+	margin:0px;
+	padding:0px;
+	border:0px;
+	text-align:left;
+	line-height:17px;
+	margin-right:5px;
+}
+
+#rps .col p.slider-content-both img{
+	margin-left:10px;
+	margin-right:10px;
+	-moz-border-radius: 1px;
+	-khtml-border-radius: 1px;
+	-webkit-border-radius: 1px;
+    background-color: white;
+    border: 2px solid #EBEBEB;
+	padding:1px;
+}
+
 #rps .paging {
 	font-size:11px;
 	position: absolute;

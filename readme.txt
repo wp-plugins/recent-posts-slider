@@ -3,7 +3,7 @@ Contributors: nehagoel
 Tags: posts, recent, recent posts, recent post, scroll, slider, most recent, posts slider, most recent posts
 Requires at least: 2.9.1
 Tested up to: 3.0.4
-Stable tag: 0.4
+Stable tag: 0.5
 
 Recent posts slider displays your blog's recent posts using slider.
 
@@ -54,6 +54,11 @@ Contact me at http://rps.eworksphere.com/contact
 1. Configuration page
 
 == Changelog ==
+
+= v0.5 =
+* Resolved some issues.
+* New feature is added to show both excerpt & post thumb.
+* New features are added to set post title color, pagination style, slider speed & excerpt words size.
 
 = v0.4 =
 * Fixed the issue related to image thumbnail

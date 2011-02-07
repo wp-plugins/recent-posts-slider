@@ -34,7 +34,19 @@
 		$post_exclude_ids = $_POST['rps_post_exclude_ids'];
 		update_option('rps_post_exclude_ids', $post_exclude_ids);
 		
-		if ( $slider_content== 1 )
+		$post_title_color = $_POST['rps_post_title_color'];
+		update_option('rps_post_title_color', $post_title_color);
+		
+		$slider_speed = $_POST['rps_slider_speed'];
+		update_option('rps_slider_speed', $slider_speed);
+		
+		$pagination_style = $_POST['rps_pagination_style'];
+		update_option('rps_pagination_style', $pagination_style);
+		
+		$excerpt_words = $_POST['rps_excerpt_words'];
+		update_option('rps_excerpt_words', $excerpt_words);
+		
+		if ( $slider_content== 1 || $slider_content== 3)
 			rps_post_img_thumb();
 		?>
 		<?php if( empty($error) ){ ?>
@@ -56,6 +68,10 @@
 		$category_ids = get_option('rps_category_ids');
 		$post_include_ids = get_option('rps_post_include_ids');
 		$post_exclude_ids = get_option('rps_post_exclude_ids');
+		$post_title_color = get_option('rps_post_title_color');
+		$slider_speed = get_option('rps_slider_speed');
+		$pagination_style = get_option('rps_pagination_style');
+		$excerpt_words = get_option('rps_excerpt_words');
 	}
 ?>
 
@@ -89,6 +105,7 @@
 		<select name="rps_slider_content">
 			<option value="1" <?php if($slider_content==1){echo 'selected';} ?>>Show Post Thumbnails</option>
 			<option value="2" <?php if($slider_content==2){echo 'selected';} ?>>Show Excerpt</option>
+			<option value="3" <?php if($slider_content==3){echo 'selected';} ?>>Show Both</option>
 		</select>
 	</p>
 	<p>	
@@ -105,6 +122,28 @@
 		<?php _e("Posts to exclude"); ?> 
 		<input type="text" name="rps_post_exclude_ids" value="<?php echo $post_exclude_ids; ?>" size="40">
 		<?php _e("Seperated by commas"); ?>
+	</p>
+	<p>	
+		<?php _e("Posts Title Color"); ?> 
+		<input type="text" name="rps_post_title_color" value="<?php echo $post_title_color; ?>" size="40">
+		<?php _e(" ex : ef4534" ); ?>
+	</p>
+	<p>	
+		<?php _e("Slider Speed"); ?> 
+		<input type="text" name="rps_slider_speed" value="<?php echo $slider_speed; ?>" size="40">
+		<?php _e(" ex : 10 (It is in seconds)" ); ?>
+	</p>
+	<p>	
+		<?php _e("Pagination Style"); ?> 
+		<select name="rps_pagination_style">
+			<option value="1" <?php if($pagination_style==1){echo 'selected';} ?>>Numbers</option>
+			<option value="2" <?php if($pagination_style==2){echo 'selected';} ?>>Dots</option>
+		</select>
+	</p>
+	<p>	
+		<?php _e("Excerpt Words"); ?> 
+		<input type="text" name="rps_excerpt_words" value="<?php echo $excerpt_words; ?>" size="40">
+		<?php _e(" ex : 10" ); ?>
 	</p>
 	<p class="submit">
 	<input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e('Save Changes') ?>" />
