@@ -2,8 +2,8 @@
 Contributors: nehagoel	
 Tags: posts, recent, recent posts, recent post, scroll, slider, most recent, posts slider, most recent posts
 Requires at least: 2.9.1
-Tested up to: 3.0.4
-Stable tag: 0.5
+Tested up to: 3.1
+Stable tag: 0.6
 
 Recent posts slider displays your blog's recent posts using slider.
 
@@ -12,7 +12,7 @@ Recent posts slider displays your blog's recent posts using slider.
 Recent Posts slider displays your blog's recent posts either with excerpt or thumbnail image of first image of the post using slider.
 You can customize the slider in many ways (width, height, post per slide, no of posts to display & more).
 
-It creates the thumbnail of the first image from the post. If you want to create a thumbnail of a specific image add a custom field as rps_custom_thumb and specify image path as value.
+It creates the thumbnail of either the first image from the post or of featured image. If you want to create a thumbnail of a specific image add a custom field as rps_custom_thumb and specify image path as value.
 
 Check out the working demo at http://rps.eworksphere.com
 
@@ -54,6 +54,10 @@ Contact me at http://rps.eworksphere.com/contact
 1. Configuration page
 
 == Changelog ==
+
+= v0.6 =
+* Featured image thumbnail support is added.
+* IE issue is fixed.
 
 = v0.5 =
 * Resolved some issues.

@@ -3,7 +3,7 @@
 Plugin Name: Recent Posts Slider
 Plugin URI: http://rps.eworksphere.com
 Description: Recent Posts Slider displays your blog's recent posts either with excerpt or thumbnail images using slider.
-Version: 0.5
+Version: 0.6
 Author: Neha Goel
 */
 
@@ -141,34 +141,37 @@ function rps_post_img_thumb($post_id = NULL ){
 	foreach ( $post_details as $key_p=> $val_p ) {
 		
 		$first_img_name = '';
+		$img_name='';
+		$first_img_src = '';
 		$first_img_name = get_post_meta($val_p['post_ID'], 'rps_custom_thumb', true);
+		
+		if (has_post_thumbnail( $val_p['post_ID'] ) && empty($first_img_name)){
+			$img_details = wp_get_attachment_image_src( get_post_thumbnail_id( $val_p['post_ID'] ), 'full' );
+			$first_img_src = substr($img_details[0], (strrpos($img_details[0], 'uploads/')));
+			$first_img_src = trim($first_img_src,'uploads/');
+		}else{
+			if(empty($first_img_name)){
+				preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $val_p['post_content'], $matches);
 			
-		if(empty($first_img_name)){
-			$img_name='';
-			$first_img_src = '';
-		
-			preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $val_p['post_content'], $matches);
-		
-			if ( count($matches) && isset($matches[1]) ) {
-				$first_img_name = $matches[1][0];
-			}	
-		}
-		
-		$img_files = get_children("post_parent=".$val_p['post_ID']."&post_type=attachment&post_mime_type=image");
-		
-		foreach ( $img_files as $key=>$val ) {
-			$img_details=wp_get_attachment_image_src($key,'full');
-			$img_src = get_post_meta($key,'_wp_attached_file','true');
-			$img_name = substr($img_src, 0, (strrpos($img_src, '.')));
-		
-			if ( strrpos($first_img_name, $img_name) ) {
-				$first_img_src = $img_src;
+				if ( count($matches) && isset($matches[1]) ) {
+					$first_img_name = $matches[1][0];
+				}	
+			}
+			$img_files = get_children("post_parent=".$val_p['post_ID']."&post_type=attachment&post_mime_type=image");
+			
+			foreach ( $img_files as $key=>$val ) {
+				//$img_details=wp_get_attachment_image_src($key,'full');
+				$img_src = get_post_meta($key,'_wp_attached_file','true');
+				$img_name = substr($img_src, 0, (strrpos($img_src, '.')));
+			
+				if ( strrpos($first_img_name, $img_name) ) {
+					$first_img_src = $img_src;
+				}
 			}
 		}
 		
-		if( !empty($first_img_src) ){
-			$upload_dir = wp_upload_dir();
-			
+		$upload_dir = wp_upload_dir();
+		if( !empty($first_img_src) ){	
 			if ( $set_img_width > 0 && $set_img_height > 0 ){
 				$img_file = image_resize($upload_dir['basedir'].'/'.$first_img_src,$set_img_width,$set_img_height,'true');
 			}
@@ -192,6 +195,18 @@ function rps_post_img_thumb($post_id = NULL ){
 				} else {
 					add_post_meta($val_p['post_ID'], '_rps_img_src', $new_wrp_img_src);
 				}
+			}
+		}else{
+			if ( $rps_image_src = get_post_custom_values('_rps_img_src', $val_p['post_ID']) ) {
+				$old_wrp_img_src = $rps_image_src['0'];
+				
+				$old_img_path = $upload_dir['basedir'].$old_wrp_img_src;
+				if( !empty($old_wrp_img_src) ) {
+					if( is_file($old_img_path) ){	
+						@unlink($old_img_path);
+					}
+				}
+				delete_post_meta($val_p['post_ID'], '_rps_img_src', $old_wrp_img_src);
 			}
 		}
 	}
@@ -243,6 +258,11 @@ function rps_show() {
 		$slider_speed = 7000;
 	}else{
 		$slider_speed = $slider_speed * 1000;
+	}
+	if ( empty($post_title_color) ){
+		$post_title_color = "#666";
+	}else{
+		$post_title_color = "#".$post_title_color;
 	}
 	$excerpt_length = '';
 	$excerpt_length = abs( (($width-40)/20) * (($height-55)/15) );
@@ -309,7 +329,7 @@ function rps_show() {
 
 	$j("#rps .col").css({"width" : '.(($width/$post_per_slide)-2).'});
 	$j("#rps .col").css({"height" : '.($height-4).'});
-	$j("#rps .col p.post-title span").css({"color" : "#'.($post_title_color).'"});
+	$j("#rps .col p.post-title span").css({"color" : "'.($post_title_color).'"});
 	
 	var imageWidth = $j("#rps .window").width();
 	//var imageSum = $j("#rps .slider div").size();
@@ -321,6 +341,7 @@ function rps_show() {
 	//Paging + Slider Function
 	rotate = function(){	
 		var triggerID = $active.attr("rel") - 1; //Get number of times to slide
+		
 		var sliderPosition = triggerID * imageWidth; //Determines the distance the image reel needs to slide
 
 		$j("#rps .paging a").removeClass("active"); 
@@ -403,13 +424,13 @@ $output .= '<div id="rps">
                 </div>
             </div>
             <div class="paging">';
-		for ( $p = 1; $p <= $paging; $p++ ) {
-			if( $pagination_style == '2'){
-				$output .= '<a href="#" rel="'.$p.'">&bull;</a>';
-			}else{
-				$output .= '<a href="#" rel="'.$p.'">'.$p.'</a>';
-			}
-                }
+				for ( $p = 1; $p <= $paging; $p++ ) {
+					if( $pagination_style == '2' ){
+						$output .= '<a href="#" rel="'.$p.'">&bull;</a>';
+					}else{
+						$output .= '<a href="#" rel="'.$p.'">'.$p.'</a>';
+					}
+				}
             $output .= '</DIV>
         </div><div class="rps-clr"></div>'; 
 	return $output;
