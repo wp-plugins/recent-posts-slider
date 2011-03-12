@@ -145,7 +145,7 @@ function rps_post_img_thumb($post_id = NULL ){
 		$first_img_src = '';
 		$first_img_name = get_post_meta($val_p['post_ID'], 'rps_custom_thumb', true);
 		
-		if (has_post_thumbnail( $val_p['post_ID'] ) && empty($first_img_name)){
+		if (function_exists('has_post_thumbnail') && has_post_thumbnail( $val_p['post_ID'] ) && empty($first_img_name)){
 			$img_details = wp_get_attachment_image_src( get_post_thumbnail_id( $val_p['post_ID'] ), 'full' );
 			$first_img_src = substr($img_details[0], (strrpos($img_details[0], 'uploads/')));
 			$first_img_src = trim($first_img_src,'uploads/');
