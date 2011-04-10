@@ -3,7 +3,7 @@
 Plugin Name: Recent Posts Slider
 Plugin URI: http://rps.eworksphere.com
 Description: Recent Posts Slider displays your blog's recent posts either with excerpt or thumbnail images using slider.
-Version: 0.6
+Version: 0.6.1
 Author: Neha Goel
 */
 
@@ -143,37 +143,56 @@ function rps_post_img_thumb($post_id = NULL ){
 		$first_img_name = '';
 		$img_name='';
 		$first_img_src = '';
-		$first_img_name = get_post_meta($val_p['post_ID'], 'rps_custom_thumb', true);
-		
+		//$first_img_name = get_post_meta($val_p['post_ID'], 'rps_custom_thumb', true);
+		$first_img_name_arr = get_post_custom_values('rps_custom_thumb', $val_p['post_ID']);
+		$first_img_name = $first_img_name_arr['0'];
+
 		if (function_exists('has_post_thumbnail') && has_post_thumbnail( $val_p['post_ID'] ) && empty($first_img_name)){
 			$img_details = wp_get_attachment_image_src( get_post_thumbnail_id( $val_p['post_ID'] ), 'full' );
 			$first_img_src = substr($img_details[0], (strrpos($img_details[0], 'uploads/')));
 			$first_img_src = trim($first_img_src,'uploads/');
 		}else{
+			
 			if(empty($first_img_name)){
 				preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $val_p['post_content'], $matches);
 			
 				if ( count($matches) && isset($matches[1]) ) {
 					$first_img_name = $matches[1][0];
 				}	
-			}
-			$img_files = get_children("post_parent=".$val_p['post_ID']."&post_type=attachment&post_mime_type=image");
 			
-			foreach ( $img_files as $key=>$val ) {
-				//$img_details=wp_get_attachment_image_src($key,'full');
-				$img_src = get_post_meta($key,'_wp_attached_file','true');
-				$img_name = substr($img_src, 0, (strrpos($img_src, '.')));
-			
-				if ( strrpos($first_img_name, $img_name) ) {
-					$first_img_src = $img_src;
+				$img_files = get_children("post_parent=".$val_p['post_ID']."&post_type=attachment&post_mime_type=image");
+				
+				foreach ( $img_files as $key=>$val ) {
+					//$img_details=wp_get_attachment_image_src($key,'full');
+					$img_src = get_post_meta($key,'_wp_attached_file','true');
+					$img_name = substr($img_src, 0, (strrpos($img_src, '.')));
+				
+					if ( strrpos($first_img_name, $img_name) ) {
+						$first_img_src = $img_src;
+					}
 				}
+			}else{
+				$first_img_src = substr($first_img_name, (strrpos($first_img_name, 'uploads/')));
+				$first_img_src = trim($first_img_src,'uploads/');
 			}
 		}
 		
 		$upload_dir = wp_upload_dir();
 		if( !empty($first_img_src) ){	
-			if ( $set_img_width > 0 && $set_img_height > 0 ){
-				$img_file = image_resize($upload_dir['basedir'].'/'.$first_img_src,$set_img_width,$set_img_height,'true');
+			$size = @getimagesize( $upload_dir['basedir'].'/'.$first_img_src );
+			
+			if ( $set_img_width > 0 && $set_img_height > 0 && $size){
+				if($size[0] <= $set_img_width && $size[1] <= $set_img_height){
+					$img_file = $upload_dir['basedir'].'/'.$first_img_src;
+					if ( !get_post_meta($val_p['post_ID'], '_rps_is_delete_img') ) {
+						add_post_meta($val_p['post_ID'], '_rps_is_delete_img', 0);
+					}
+				}else {
+					$img_file = image_resize($upload_dir['basedir'].'/'.$first_img_src,$set_img_width,$set_img_height,'true');
+					if ( get_post_meta($val_p['post_ID'], '_rps_is_delete_img') ) {
+						update_post_meta($val_p['post_ID'], '_rps_is_delete_img', 1);
+					}
+				}
 			}
 			
 			if ( !empty($img_file) ) {
@@ -186,7 +205,8 @@ function rps_post_img_thumb($post_id = NULL ){
 					if ( $old_wrp_img_src != $new_wrp_img_src ) {
 						$old_img_path = $upload_dir['basedir'].$old_wrp_img_src;
 						if( !empty($old_wrp_img_src) ) {
-							if( is_file($old_img_path) ){	
+							$is_delete = get_post_meta($val_p['post_ID'], '_rps_is_delete_img');
+							if( is_file($old_img_path) && $is_delete[0] ){	
 								@unlink($old_img_path);
 							}			
 						}
@@ -202,7 +222,8 @@ function rps_post_img_thumb($post_id = NULL ){
 				
 				$old_img_path = $upload_dir['basedir'].$old_wrp_img_src;
 				if( !empty($old_wrp_img_src) ) {
-					if( is_file($old_img_path) ){	
+					$is_delete = get_post_meta($val_p['post_ID'], '_rps_is_delete_img');
+					if( is_file($old_img_path) && $is_delete[0] ){	
 						@unlink($old_img_path);
 					}
 				}
