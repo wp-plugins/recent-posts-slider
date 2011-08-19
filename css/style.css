@@ -76,7 +76,7 @@
 #rps .col p.post-title span:hover {
 	height:auto;
 	overflow:auto;
-	background:#fffefe;
+	/*background:#fffefe;*/
 	z-index:100;
 	padding-bottom:3px;
 	color:#000;
@@ -106,10 +106,10 @@
 	text-align:left;
 	line-height:17px;
 	margin-right:5px;
+	margin-left:10px;
 }
 
 #rps .col p.slider-content-both img{
-	margin-left:10px;
 	margin-right:10px;
 	-moz-border-radius: 1px;
 	-khtml-border-radius: 1px;
@@ -154,4 +154,17 @@
 
 #rps .paging a:hover {
 	color:#000;
+}
+
+#rps .post-date{
+	position:absolute;
+	margin-left:5px;
+	margin-right:5px;
+	z-index:1000px;
+	background:#F7F5F5;
+	filter:alpha(opacity=60);
+	opacity:0.6;
+	color:#000;
+	font-weight:bold;
+	padding-left:3px;
 }

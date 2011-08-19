@@ -1,9 +1,10 @@
 === Recent Posts Slider ===
 Contributors: nehagoel	
+Donate link: http://recent-posts-slider.com/donate/
 Tags: posts, recent, recent posts, recent post, scroll, slider, most recent, posts slider, most recent posts
 Requires at least: 2.9.1
-Tested up to: 3.1.1
-Stable tag: 0.6.1
+Tested up to: 3.2.1
+Stable tag: 0.6.2
 
 Recent posts slider displays your blog's recent posts using slider.
 
@@ -14,9 +15,9 @@ You can customize the slider in many ways (width, height, post per slide, no of 
 
 It creates the thumbnail of either the first image from the post or of featured image. If you want to create a thumbnail of a specific image add a custom field as rps_custom_thumb and specify image path as value.
 
-Check out the working demo at http://rps.eworksphere.com
+Check out the working demo at http://recent-posts-slider.com
 
-If you have a feature that you would like to get added in future versions, feel free to contact me at http://rps.eworksphere.com/contact.
+If you have a feature that you would like to get added in future versions, feel free to contact me at http://recent-posts-slider.com/contact.
 
 If you find it useful please don't forget to rate this plugin.
 
@@ -47,13 +48,18 @@ Yes, it will display only few characters due to some restrictions for flexible w
 To view complete post title move the mouse pointer over it.
 
 = Having problems, questions, bugs & suggestions =
-Contact me at http://rps.eworksphere.com/contact
+Contact me at http://recent-posts-slider.com/contact
 
 == Screenshots ==
 
 1. Configuration page
 
 == Changelog ==
+
+= v0.6.2 =
+* Jquery conflict issue resolved.
+* Some new features added.
+* Check out the detailed description at http://recent-posts-slider.com.
 
 = v0.6.1 =
 * Small image issue is fixed.
