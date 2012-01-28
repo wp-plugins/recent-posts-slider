@@ -109,7 +109,7 @@
 	In this page you can customize the plugin according to your needs. Having any issues <a href="http://rps.eworksphere.com/contact/" target="_blank">contact</a> me.
 	<br/>And feel free to <a href="http://rps.eworksphere.com/donate/" target="_blank">donate</a> for this plugin :).
 </p>
-<form name="rps_form" method="post" action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>">
+<form name="rps_form" method="post" action="<?php echo admin_url('options-general.php').'?page='.$_GET['page']; ?>">
 	<input type="hidden" name="rps_opt_hidden" value="Y">
 	<div class="metabox-holder">
 		<div class="postbox"> 

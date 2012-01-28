@@ -76,7 +76,7 @@
 #rps .col p.post-title span:hover {
 	height:auto;
 	overflow:auto;
-	background:#fffefe;
+	/*background:#fffefe;*/
 	z-index:100;
 	padding-bottom:3px;
 	color:#000;

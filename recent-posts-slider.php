@@ -3,7 +3,7 @@
 Plugin Name: Recent Posts Slider
 Plugin URI: http://recent-posts-slider.com
 Description: Recent Posts Slider displays your blog's recent posts either with excerpt or thumbnail images using slider.
-Version: 0.6.2
+Version: 0.6.3
 Author: Neha Goel
 */
 
@@ -354,7 +354,7 @@ function rps_show() {
 				$post_details[$key]['post_excerpt'] = create_excerpt($val->post_content, ($excerpt_length/2)-10, $post_details[$key]['post_permalink'], $excerpt_words);
 		}
 		if ( $show_post_date ){
-			$post_details[$key]['post_date'] = date($post_date_format,strtotime($val->post_date));	
+			$post_details[$key]['post_date'] = date_i18n($post_date_format,strtotime($val->post_date));	
 		}
 	}
 	
