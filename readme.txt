@@ -3,8 +3,8 @@ Contributors: nehagoel
 Donate link: http://recent-posts-slider.com/donate/
 Tags: posts, recent, recent posts, recent post, scroll, slider, most recent, posts slider, most recent posts
 Requires at least: 2.9.1
-Tested up to: 3.2.1
-Stable tag: 0.6.2
+Tested up to: 3.3.1
+Stable tag: 0.6.3
 
 Recent posts slider displays your blog's recent posts using slider.
 
@@ -55,6 +55,10 @@ Contact me at http://recent-posts-slider.com/contact
 1. Configuration page
 
 == Changelog ==
+
+= v0.6.3 =
+* Security update removed REQUEST_URI
+* Date Internationalization
 
 = v0.6.2 =
 * Jquery conflict issue resolved.
