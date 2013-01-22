@@ -3,7 +3,7 @@
 Plugin Name: Recent Posts Slider
 Plugin URI: http://recent-posts-slider.com
 Description: Recent Posts Slider displays your blog's recent posts either with excerpt or thumbnail images using slider.
-Version: 0.6.3
+Version: 0.7
 Author: Neha Goel
 */
 
@@ -23,6 +23,9 @@ Author: Neha Goel
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+// Enable internationalisation
+load_plugin_textdomain( 'rps', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
+ 
 //To perform action while activating pulgin i.e. creating the thumbnail of first image of  all posts
 register_activation_hook( __FILE__, 'rps_activate' );
 
@@ -161,12 +164,23 @@ function rps_post_img_thumb($post_id = NULL ){
 			}
 		}
 		
+		if( isset($_SERVER['SUBDOMAIN_DOCUMENT_ROOT']) && !empty($_SERVER['SUBDOMAIN_DOCUMENT_ROOT']) ){
+			$server_root = $_SERVER['SUBDOMAIN_DOCUMENT_ROOT'];
+		}elseif( isset($_SERVER['SPT_DOCROOT']) && !empty($_SERVER['SPT_DOCROOT']) ){
+			$server_root = $_SERVER['SPT_DOCROOT'];
+		}else{
+			$server_root = $_SERVER['DOCUMENT_ROOT'];
+		}
+		
 		if(!empty($first_img_name)){
 			$arr_img = explode('/',$first_img_name);
 			unset($arr_img[0]);
 			unset($arr_img[1]);
 			unset($arr_img[2]);
-			$first_img_src = $_SERVER['DOCUMENT_ROOT']."/".implode('/',$arr_img);
+			if( isset($_SERVER['SPT_DOCROOT']) && !empty($_SERVER['SPT_DOCROOT']) ){
+				unset($arr_img[3]);
+			}
+			$first_img_src = $server_root."/".implode('/',$arr_img);
 		}
 		
 		if( !empty($first_img_src) ){	
@@ -181,13 +195,13 @@ function rps_post_img_thumb($post_id = NULL ){
 			}
 			
 			if ( !empty($img_file) ) {
-				$new_wrp_img_src = substr($img_file,strlen($_SERVER['DOCUMENT_ROOT']));
+				$new_wrp_img_src = substr($img_file,strlen($server_root));
 				
 				if ( $rps_image_src = get_post_custom_values('_rps_img_src', $val_p['post_ID']) ) {
 					$old_wrp_img_src = $rps_image_src['0'];
 					
 					if ( $old_wrp_img_src != $new_wrp_img_src ) {
-						$old_img_path = $_SERVER['DOCUMENT_ROOT'].$old_wrp_img_src;
+						$old_img_path = $server_root.$old_wrp_img_src;
 						if( !empty($old_wrp_img_src) ) {
 							$is_delete = get_post_meta($val_p['post_ID'], '_rps_is_delete_img');
 							if( is_file($old_img_path) && $is_delete[0] ){	
@@ -216,7 +230,7 @@ function rps_post_img_thumb($post_id = NULL ){
 			if ( $rps_image_src = get_post_custom_values('_rps_img_src', $val_p['post_ID']) ) {
 				$old_wrp_img_src = $rps_image_src['0'];
 				
-				$old_img_path = $_SERVER['DOCUMENT_ROOT'].$old_wrp_img_src;
+				$old_img_path = $server_root.$old_wrp_img_src;
 				if( !empty($old_wrp_img_src) ) {
 					$is_delete = get_post_meta($val_p['post_ID'], '_rps_is_delete_img');
 					if( is_file($old_img_path) && $is_delete[0] ){	
@@ -233,13 +247,13 @@ function rps_post_img_thumb($post_id = NULL ){
 
 /** Create menu for options page */
 function rps_admin_actions() {
-    add_options_page('Recent Posts Slider', 'Recent Posts Slider', 'manage_options', 'recent-posts-slider', 'rps_admin');
+    add_options_page(__('Recent Posts Slider', 'rps'), __('Recent Posts Slider', 'rps'), 'manage_options', 'recent-posts-slider', 'rps_admin');
 }
 
 /** To perform admin page functionality */
 function rps_admin() {
     if ( !current_user_can('manage_options') )
-    	wp_die( __('You do not have sufficient permissions to access this page.') );
+    	wp_die( __('You do not have sufficient permissions to access this page.','rps') );
 	include('recent-posts-slider-admin.php');
 }
 
@@ -458,7 +472,7 @@ $output .= '<div id="rps">
 							if( !empty($post_details[$p]['post_first_img']['0']) ){
 								$rps_img_src_path = $post_details[$p]['post_first_img']['0'];
 								if(!empty($rps_img_src_path)){
-									$output .= '<a href="'.$post_details[$p]['post_permalink'].'"><center><img src="'.$rps_img_src_path.'" /></center></a>';
+									$output .= '<a href="'.$post_details[$p]['post_permalink'].'"><center><img src="'.$rps_img_src_path.'" alt="'.$post_details[$p]['post_title'].'" /></center></a>';
 								}
 							}
 							if($show_post_date){
@@ -470,7 +484,7 @@ $output .= '<div id="rps">
 							if( !empty($post_details[$p]['post_first_img']['0']) || !empty($post_details[$p]['post_excerpt'])){
 								$rps_img_src_path = $post_details[$p]['post_first_img']['0'];
 								if(!empty($rps_img_src_path)){
-									$output .= '<a href="'.$post_details[$p]['post_permalink'].'"><img src="'.$rps_img_src_path.'" align="left" /></a>';
+									$output .= '<a href="'.$post_details[$p]['post_permalink'].'"><img src="'.$rps_img_src_path.'" alt="'.$post_details[$p]['post_title'].'" align="left" /></a>';
 								}
 								$output .= $post_details[$p]['post_excerpt'];
 							}
@@ -556,7 +570,7 @@ function create_excerpt( $post_content, $excerpt_length, $post_permalink, $excer
 class RpsWidget extends WP_Widget {
     /** constructor */
     function RpsWidget() {
-        parent::WP_Widget(false, $name = 'Recent Posts Slider', array( 'description' => __( "Your blogs recent post using slider") ));	
+        parent::WP_Widget(false, $name = __('Recent Posts Slider','rps'), array( 'description' => __( 'Your blogs recent post using slider','rps') ));	
     }
 
     /** @see WP_Widget::widget */
@@ -581,7 +595,7 @@ class RpsWidget extends WP_Widget {
     function form($instance) {				
         $title = esc_attr($instance['title']);
         ?>
-            <p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" /></label></p>
+            <p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:','rps'); ?> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" /></label></p>
         <?php 
     }
 

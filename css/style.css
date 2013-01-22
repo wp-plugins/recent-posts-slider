@@ -168,3 +168,9 @@
 	font-weight:bold;
 	padding-left:3px;
 }
+
+#rps img { 
+	max-width: 100%; 
+	height: auto;  
+	width: auto9; /* ie8 */ 
+}
