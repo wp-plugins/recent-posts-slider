@@ -3,7 +3,7 @@
 Plugin Name: Recent Posts Slider
 Plugin URI: http://recent-posts-slider.com
 Description: Recent Posts Slider displays your blog's recent posts either with excerpt or thumbnail images using slider.
-Version: 0.6.3
+Version: 0.7.1
 Author: Neha Goel
 */
 
@@ -23,6 +23,9 @@ Author: Neha Goel
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+// Enable internationalisation
+load_plugin_textdomain( 'rps', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
+ 
 //To perform action while activating pulgin i.e. creating the thumbnail of first image of  all posts
 register_activation_hook( __FILE__, 'rps_activate' );
 
@@ -38,7 +41,7 @@ add_action('wp_print_styles', 'rps_add_style');
 add_action('wp_head', 'rps_add_custom_style');
 add_action('init', 'rps_add_script');
 
-add_shortcode('rps', 'rps_show');
+add_shortcode('rps', 'rps_show_shortcode');
 
 // register Rps widget
 add_action('widgets_init', create_function('', 'return register_widget("RpsWidget");'));
@@ -161,12 +164,23 @@ function rps_post_img_thumb($post_id = NULL ){
 			}
 		}
 		
+		if( isset($_SERVER['SUBDOMAIN_DOCUMENT_ROOT']) && !empty($_SERVER['SUBDOMAIN_DOCUMENT_ROOT']) ){
+			$server_root = $_SERVER['SUBDOMAIN_DOCUMENT_ROOT'];
+		}elseif( isset($_SERVER['SPT_DOCROOT']) && !empty($_SERVER['SPT_DOCROOT']) ){
+			$server_root = $_SERVER['SPT_DOCROOT'];
+		}else{
+			$server_root = $_SERVER['DOCUMENT_ROOT'];
+		}
+		
 		if(!empty($first_img_name)){
 			$arr_img = explode('/',$first_img_name);
 			unset($arr_img[0]);
 			unset($arr_img[1]);
 			unset($arr_img[2]);
-			$first_img_src = $_SERVER['DOCUMENT_ROOT']."/".implode('/',$arr_img);
+			if( isset($_SERVER['SPT_DOCROOT']) && !empty($_SERVER['SPT_DOCROOT']) ){
+				unset($arr_img[3]);
+			}
+			$first_img_src = $server_root."/".implode('/',$arr_img);
 		}
 		
 		if( !empty($first_img_src) ){	
@@ -181,13 +195,13 @@ function rps_post_img_thumb($post_id = NULL ){
 			}
 			
 			if ( !empty($img_file) ) {
-				$new_wrp_img_src = substr($img_file,strlen($_SERVER['DOCUMENT_ROOT']));
+				$new_wrp_img_src = substr($img_file,strlen($server_root));
 				
 				if ( $rps_image_src = get_post_custom_values('_rps_img_src', $val_p['post_ID']) ) {
 					$old_wrp_img_src = $rps_image_src['0'];
 					
 					if ( $old_wrp_img_src != $new_wrp_img_src ) {
-						$old_img_path = $_SERVER['DOCUMENT_ROOT'].$old_wrp_img_src;
+						$old_img_path = $server_root.$old_wrp_img_src;
 						if( !empty($old_wrp_img_src) ) {
 							$is_delete = get_post_meta($val_p['post_ID'], '_rps_is_delete_img');
 							if( is_file($old_img_path) && $is_delete[0] ){	
@@ -216,7 +230,7 @@ function rps_post_img_thumb($post_id = NULL ){
 			if ( $rps_image_src = get_post_custom_values('_rps_img_src', $val_p['post_ID']) ) {
 				$old_wrp_img_src = $rps_image_src['0'];
 				
-				$old_img_path = $_SERVER['DOCUMENT_ROOT'].$old_wrp_img_src;
+				$old_img_path = $server_root.$old_wrp_img_src;
 				if( !empty($old_wrp_img_src) ) {
 					$is_delete = get_post_meta($val_p['post_ID'], '_rps_is_delete_img');
 					if( is_file($old_img_path) && $is_delete[0] ){	
@@ -233,13 +247,13 @@ function rps_post_img_thumb($post_id = NULL ){
 
 /** Create menu for options page */
 function rps_admin_actions() {
-    add_options_page('Recent Posts Slider', 'Recent Posts Slider', 'manage_options', 'recent-posts-slider', 'rps_admin');
+    add_options_page(__('Recent Posts Slider', 'rps'), __('Recent Posts Slider', 'rps'), 'manage_options', 'recent-posts-slider', 'rps_admin');
 }
 
 /** To perform admin page functionality */
 function rps_admin() {
     if ( !current_user_can('manage_options') )
-    	wp_die( __('You do not have sufficient permissions to access this page.') );
+    	wp_die( __('You do not have sufficient permissions to access this page.','rps') );
 	include('recent-posts-slider-admin.php');
 }
 
@@ -263,18 +277,30 @@ function rps_add_script() {
 	}
 }
 
+function rps_show_shortcode($rps_atts) {
+	
+	extract(shortcode_atts(array(
+		'category_ids' => '',
+		'total_posts' => '',
+		'post_include_ids' => '',
+		'post_exclude_ids' => '',
+	), $rps_atts));
+	
+	return rps_show( $category_ids, $total_posts, $post_include_ids, $post_exclude_ids );
+}
+
 /** To show slider 
  * @return output
 */
-function rps_show() {	
+function rps_show( $category_ids=null, $total_posts=null, $post_include_ids=null, $post_exclude_ids=null ) {	
 	$width = get_option('rps_width');
 	$height = get_option('rps_height');
 	$post_per_slide = get_option('rps_post_per_slide');
-	$total_posts = get_option('rps_total_posts');
+	if( empty($total_posts) ) $total_posts = get_option('rps_total_posts');
 	$slider_content = get_option('rps_slider_content');
-	$category_ids = get_option('rps_category_ids');
-	$post_include_ids = get_option('rps_post_include_ids');
-	$post_exclude_ids = get_option('rps_post_exclude_ids');
+	if( empty($category_ids) ) $category_ids = get_option('rps_category_ids');
+	if( empty($post_include_ids) ) $post_include_ids = get_option('rps_post_include_ids');
+	if( empty($post_exclude_ids) ) $post_exclude_ids = get_option('rps_post_exclude_ids');
 	$post_title_color = get_option('rps_post_title_color');
 	$post_title_bg_color = get_option('rps_post_title_bg_color');
 	$slider_speed = get_option('rps_slider_speed');
@@ -458,7 +484,7 @@ $output .= '<div id="rps">
 							if( !empty($post_details[$p]['post_first_img']['0']) ){
 								$rps_img_src_path = $post_details[$p]['post_first_img']['0'];
 								if(!empty($rps_img_src_path)){
-									$output .= '<a href="'.$post_details[$p]['post_permalink'].'"><center><img src="'.$rps_img_src_path.'" /></center></a>';
+									$output .= '<a href="'.$post_details[$p]['post_permalink'].'"><center><img src="'.$rps_img_src_path.'" alt="'.$post_details[$p]['post_title'].'" /></center></a>';
 								}
 							}
 							if($show_post_date){
@@ -470,7 +496,7 @@ $output .= '<div id="rps">
 							if( !empty($post_details[$p]['post_first_img']['0']) || !empty($post_details[$p]['post_excerpt'])){
 								$rps_img_src_path = $post_details[$p]['post_first_img']['0'];
 								if(!empty($rps_img_src_path)){
-									$output .= '<a href="'.$post_details[$p]['post_permalink'].'"><img src="'.$rps_img_src_path.'" align="left" /></a>';
+									$output .= '<a href="'.$post_details[$p]['post_permalink'].'"><img src="'.$rps_img_src_path.'" alt="'.$post_details[$p]['post_title'].'" align="left" /></a>';
 								}
 								$output .= $post_details[$p]['post_excerpt'];
 							}
@@ -556,32 +582,49 @@ function create_excerpt( $post_content, $excerpt_length, $post_permalink, $excer
 class RpsWidget extends WP_Widget {
     /** constructor */
     function RpsWidget() {
-        parent::WP_Widget(false, $name = 'Recent Posts Slider', array( 'description' => __( "Your blogs recent post using slider") ));	
+        parent::WP_Widget(false, $name = __('Recent Posts Slider','rps'), array( 'description' => __( 'Your blogs recent post using slider','rps') ));	
     }
 
     /** @see WP_Widget::widget */
     function widget($args, $instance) {		
         extract( $args );
         $title = apply_filters('widget_title', $instance['title']);
-	echo $before_widget;
+        $category_ids = apply_filters('widget_title', $instance['category_ids']);
+        $total_posts = apply_filters('widget_title', $instance['total_posts']);
+        $post_include_ids = apply_filters('widget_title', $instance['post_include_ids']);
+        $post_exclude_ids = apply_filters('widget_title', $instance['post_exclude_ids']);
+		echo $before_widget;
         if ( $title )
-		echo $before_title . $title . $after_title; 
-		if (function_exists('rps_show')) echo rps_show(); 
+			echo $before_title . $title . $after_title; 
+		if (function_exists('rps_show')) 
+			echo rps_show($category_ids, $total_posts, $post_include_ids, $post_exclude_ids); 
 		echo $after_widget; 
     }
 
     /** @see WP_Widget::update */
     function update($new_instance, $old_instance) {				
-	$instance = $old_instance;
-	$instance['title'] = strip_tags($new_instance['title']);
+		$instance = $old_instance;
+		$instance['title'] = strip_tags($new_instance['title']);
+		$instance['category_ids'] = strip_tags($new_instance['category_ids']);
+		$instance['total_posts'] = strip_tags($new_instance['total_posts']);
+		$instance['post_include_ids'] = strip_tags($new_instance['post_include_ids']);
+		$instance['post_exclude_ids'] = strip_tags($new_instance['post_exclude_ids']);
         return $instance;
     }
 
     /** @see WP_Widget::form */
     function form($instance) {				
         $title = esc_attr($instance['title']);
+        $category_ids = esc_attr($instance['category_ids']);
+        $total_posts = esc_attr($instance['total_posts']);
+        $post_include_ids = esc_attr($instance['post_include_ids']);
+        $post_exclude_ids = esc_attr($instance['post_exclude_ids']);
         ?>
-            <p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" /></label></p>
+            <p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:','rps'); ?> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" /></label></p>
+			<p><label for="<?php echo $this->get_field_id('category_ids'); ?>"><?php _e('Category Ids (Comma seperated):','rps'); ?> <input class="widefat" id="<?php echo $this->get_field_id('category_ids'); ?>" name="<?php echo $this->get_field_name('category_ids'); ?>" type="text" value="<?php echo $category_ids; ?>" /></label></p>
+			<p><label for="<?php echo $this->get_field_id('total_posts'); ?>"><?php _e('Total Posts:','rps'); ?> <input class="widefat" id="<?php echo $this->get_field_id('total_posts'); ?>" name="<?php echo $this->get_field_name('total_posts'); ?>" type="text" value="<?php echo $total_posts; ?>" /></label></p>
+			<p><label for="<?php echo $this->get_field_id('post_include_ids'); ?>"><?php _e('Posts to include (Comma seperated):','rps'); ?> <input class="widefat" id="<?php echo $this->get_field_id('post_include_ids'); ?>" name="<?php echo $this->get_field_name('post_include_ids'); ?>" type="text" value="<?php echo $post_include_ids; ?>" /></label></p>
+			<p><label for="<?php echo $this->get_field_id('post_exclude_ids'); ?>"><?php _e('Posts to exclude (Comma seperated):','rps'); ?> <input class="widefat" id="<?php echo $this->get_field_id('post_exclude_ids'); ?>" name="<?php echo $this->get_field_name('post_exclude_ids'); ?>" type="text" value="<?php echo $post_exclude_ids; ?>" /></label></p>
         <?php 
     }
 

@@ -3,8 +3,8 @@ Contributors: nehagoel
 Donate link: http://recent-posts-slider.com/donate/
 Tags: posts, recent, recent posts, recent post, scroll, slider, most recent, posts slider, most recent posts
 Requires at least: 2.9.1
-Tested up to: 3.3.1
-Stable tag: 0.6.3
+Tested up to: 3.5
+Stable tag: 0.7
 
 Recent posts slider displays your blog's recent posts using slider.
 
@@ -37,8 +37,10 @@ Now go to **Settings** and then **Recent Posts Slider** to configure any options
 
 In order to display the recent posts slider, you have three options
 
-1. Simply place `<?php if (function_exists('rps_show')) echo rps_show(); ?>` in your theme. 
-1. Add the shortcode '[rps]'.
+1. Simply place `<?php if (function_exists('rps_show')) echo rps_show(); ?>` in your theme 
+or use rps_show( $category_ids, $total_posts, $post_include_ids, $post_exclude_ids ) to have different slider on differet pages;
+1. Add the shortcode simply '[rps]' 
+or '[rps category_ids="2,3"  total_posts="2" post_include_ids="1" post_exclude_ids="2"]'.
 1. Using widget.
 
 == Frequently Asked Questions ==
@@ -55,6 +57,16 @@ Contact me at http://recent-posts-slider.com/contact
 1. Configuration page
 
 == Changelog ==
+
+= v0.7.1 =
+* Customize the widget slider according to category, post ids & total no. of posts.
+
+= v0.7 =
+* Full internationalization is now possible
+* Provided an alt tag to the images inside slider
+* Fixed the no image issue on subdomains
+* You are now allowed to show different slider on different pages based on category, post ids & total no. of posts
+* Do check out http://recent-posts-slider.com/2013/01/v0-7-released/
 
 = v0.6.3 =
 * Security update removed REQUEST_URI

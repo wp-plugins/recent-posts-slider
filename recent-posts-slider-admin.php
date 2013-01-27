@@ -5,13 +5,13 @@
 		if ( is_numeric($width) )
 			update_option('rps_width', $width);
 		else
-			$error[] = "Please enter width in numbers.";
+			$error[] = __('Please enter width in numbers.', 'rps');
 		
 		$height = $_POST['rps_height'];
 		if ( is_numeric($height) )
 			update_option('rps_height', $height);
 		else
-			$error[] = "Please enter height in numbers.";
+			$error[] = __('Please enter height in numbers.', 'rps');
 		
 		$post_per_slide = $_POST['rps_post_per_slide'];
 		update_option('rps_post_per_slide', $post_per_slide);
@@ -20,7 +20,7 @@
 		if ( is_numeric($total_posts) )
 			update_option('rps_total_posts', $total_posts);
 		else
-			$error[] = "Please enter total posts in numbers.";
+			$error[] = __('Please enter total posts in numbers.', 'rps');
 		
 		$slider_content = $_POST['rps_slider_content'];
 		update_option('rps_slider_content', $slider_content);
@@ -71,11 +71,11 @@
 			rps_post_img_thumb();
 		?>
 		<?php if( empty($error) ){ ?>
-		<div class="updated"><p><strong><?php _e('Settings saved.', 'wp-rp' ); ?></strong></p></div>
+		<div class="updated"><p><strong><?php _e('Settings saved.', 'rps'); ?></strong></p></div>
 		<?php }else{ ?>
 		<div class="error"><p><strong><?php 
 			foreach ( $error as $key=>$val ) {
-				_e($val); 
+				_e($val, 'rps'); 
 				echo "<br/>";
 			}
 		?></strong></p></div>
@@ -104,25 +104,27 @@
 ?>
 
 <div class="wrap">
-<?php echo "<h2>" . __( 'Recent Posts Slider Options', 'rps_opt' ) . "</h2>"; ?>
+<?php echo "<h2>" . __( 'Recent Posts Slider Options', 'rps') . "</h2>"; ?>
 <p>
-	In this page you can customize the plugin according to your needs. Having any issues <a href="http://rps.eworksphere.com/contact/" target="_blank">contact</a> me.
-	<br/>And feel free to <a href="http://rps.eworksphere.com/donate/" target="_blank">donate</a> for this plugin :).
+	<?php 
+		_e('In this page you can customize the plugin according to your needs. Having any issues', 'rps'); ?>
+		<a href="http://rps.eworksphere.com/contact/" target="_blank"><?php _e('contact', 'rps'); ?></a> <?php _e('me.', 'rps'); ?>
+	<br/><?php _e('And feel free to', 'rps'); ?> <a href="http://rps.eworksphere.com/donate/" target="_blank"><?php _e('donate', 'rps'); ?></a> <?php _e('for this plugin', 'rps'); ?> :).
 </p>
 <form name="rps_form" method="post" action="<?php echo admin_url('options-general.php').'?page='.$_GET['page']; ?>">
 	<input type="hidden" name="rps_opt_hidden" value="Y">
 	<div class="metabox-holder">
 		<div class="postbox"> 
-			<h3>Slider Options</h3>
+			<h3><?php _e('Slider Options', 'rps'); ?></h3>
 				<div class="slide-opt-left wd1">
 					<ul>
 						<li>
-							<label for="width">Width</label>
-							<input type="text" name="rps_width" value="<?php echo $width; ?>" size="9" /> px 
-							<span>Total width of the slider (ex : 200)</span>
+							<label for="width"><?php _e('Width', 'rps'); ?></label>
+							<input type="text" name="rps_width" value="<?php echo $width; ?>" size="9" /> <?php _e('px', 'rps'); ?>
+							<span><?php _e('Total width of the slider (ex : 200)', 'rps'); ?></span>
 						</li>
 						<li>
-							<label for="no_of_posts_per_slide">No. of post to show per slide</label>
+							<label for="no_of_posts_per_slide"><?php _e('No. of post to show per slide', 'rps'); ?></label>
 							<select name="rps_post_per_slide">
 								<?php for( $i=1; $i<=10; $i++ ){ ?>
 									<option value="<?php echo $i; ?>" <?php if($post_per_slide==$i){echo 'selected';} ?>><?php echo $i; ?></option>
@@ -134,30 +136,30 @@
 				<div class="slide-opt-left wd1">
 					<ul>
 						<li>
-							<label for="height">Height</label>
-							<input type="text" name="rps_height" value="<?php echo $height; ?>" size="9" /> px 
-							<span>Total height of the slider (ex : 150)</span>
+							<label for="height"><?php _e('Height', 'rps'); ?></label>
+							<input type="text" name="rps_height" value="<?php echo $height; ?>" size="9" /> <?php _e('px', 'rps'); ?>
+							<span><?php _e('Total height of the slider (ex : 150)', 'rps'); ?></span>
 						</li>
 						<li>
-							<label for="slider_speed">Slider Speed</label>
+							<label for="slider_speed"><?php _e('Slider Speed', 'rps'); ?></label>
 							<input type="text" name="rps_slider_speed" value="<?php echo $slider_speed; ?>" size="9" />
-							<span>ex : 10 (in seconds)</span>
+							<span><?php _e('ex : 10 (in seconds)', 'rps'); ?></span>
 						</li>
 					</ul>
 				</div>
 				<div class="slide-opt-left">
 					<ul>
 						<li>
-							<label for="total_posts">Total Posts</label>
+							<label for="total_posts"><?php _e('Total Posts', 'rps'); ?></label>
 							<input type="text" name="rps_total_posts" value="<?php echo $total_posts; ?>" size="9" />
-							<span>No of posts to show in a slider</span>
+							<span><?php _e('No of posts to show in a slider', 'rps'); ?></span>
 						</li>
 						<li>
-							<label for="pagination_style">Pagination Style</label>
+							<label for="pagination_style"><?php _e('Pagination Style', 'rps'); ?></label>
 							<select name="rps_pagination_style">
-								<option value="1" <?php if($pagination_style==1){echo 'selected';} ?>>Numbers</option>
-								<option value="2" <?php if($pagination_style==2){echo 'selected';} ?>>Dots</option>
-								<option value="3" <?php if($pagination_style==3){echo 'selected';} ?>>No Pagination</option>
+								<option value="1" <?php if($pagination_style==1){echo 'selected';} ?>><?php _e('Numbers', 'rps'); ?></option>
+								<option value="2" <?php if($pagination_style==2){echo 'selected';} ?>><?php _e('Dots', 'rps'); ?></option>
+								<option value="3" <?php if($pagination_style==3){echo 'selected';} ?>><?php _e('No Pagination', 'rps'); ?></option>
 							</select>
 						</li>
 					</ul>
@@ -167,68 +169,68 @@
 	</div>
 	<div class="metabox-holder">
 		<div class="postbox"> 
-			<h3>Slider Content Options</h3>
+			<h3><?php _e('Slider Content Options', 'rps'); ?></h3>
 			<div class="slide-opt-left wd1">
 				<ul>
 					<li>
-						<label for="slider_content">Slider content</label>
+						<label for="slider_content"><?php _e('Slider content', 'rps'); ?></label>
 						<select name="rps_slider_content">
-							<option value="1" <?php if($slider_content==1){echo 'selected';} ?>>Show Post Thumbnails</option>
-							<option value="2" <?php if($slider_content==2){echo 'selected';} ?>>Show Excerpt</option>
-							<option value="3" <?php if($slider_content==3){echo 'selected';} ?>>Show Both</option>
+							<option value="1" <?php if($slider_content==1){echo 'selected';} ?>><?php _e('Show Post Thumbnails', 'rps'); ?></option>
+							<option value="2" <?php if($slider_content==2){echo 'selected';} ?>><?php _e('Show Excerpt', 'rps'); ?></option>
+							<option value="3" <?php if($slider_content==3){echo 'selected';} ?>><?php _e('Show Both', 'rps'); ?></option>
 						</select>
 					</li>
 					<li>
-						<label for="category_id">Category IDs</label>
+						<label for="category_id"><?php _e('Category IDs', 'rps'); ?></label>
 						<input type="text" name="rps_category_ids" value="<?php echo $category_ids; ?>" size="40" />
-						<span>ex : 1,2,3,-4 (Use negative id to exclude)</span>
+						<span><?php _e('ex : 1,2,3,-4 (Use negative id to exclude)', 'rps'); ?></span>
 					</li>
 					<li>
-						<label for="posts_title_color">Posts Title Color</label>
+						<label for="posts_title_color"><?php _e('Posts Title Color', 'rps'); ?></label>
 						<input type="text" name="rps_post_title_color" value="<?php echo $post_title_color; ?>" size="40" />
-						<span>ex : ef4534</span>
+						<span><?php _e('ex', 'rps'); ?> : ef4534</span>
 					</li>
 					<li>
-						<label for="excerpt_words">Excerpt Words</label>
+						<label for="excerpt_words"><?php _e('Excerpt Words', 'rps'); ?></label>
 						<input type="text" name="rps_excerpt_words" value="<?php echo $excerpt_words; ?>" size="40" />
-						<span>ex : 10</span>
-						Don't remove tags &nbsp; <input type="checkbox" name="rps_keep_excerpt_tags" value="yes" <?php if ($keep_excerpt_tags=="yes") { echo 'checked="checked"';}  ?> />
+						<span><?php _e('ex', 'rps'); ?> : 10</span>
+						<?php _e("Don't remove tags", 'rps'); ?> &nbsp; <input type="checkbox" name="rps_keep_excerpt_tags" value="yes" <?php if ($keep_excerpt_tags=="yes") { echo 'checked="checked"';}  ?> />
 					</li>
 				</ul>
 			</div>
 			<div class="slide-opt-left wd1">
 				<ul>
 					<li>
-						<label for="posts_to_include">Posts to include</label>
+						<label for="posts_to_include"><?php _e('Posts to include', 'rps'); ?></label>
 						<input type="text" name="rps_post_include_ids" value="<?php echo $post_include_ids; ?>" size="40" />
-						<span>Seperated by commas</span>
+						<span><?php _e('Seperated by commas', 'rps'); ?></span>
 					</li>
 					<li>
-						<label for="posts_to_exclude">Posts to exclude</label>
+						<label for="posts_to_exclude"><?php _e('Posts to exclude', 'rps'); ?></label>
 						<input type="text" name="rps_post_exclude_ids" value="<?php echo $post_exclude_ids; ?>" size="40" />
-						<span>Seperated by commas</span>
+						<span><?php _e('Seperated by commas', 'rps'); ?></span>
 					</li>
 					<li>
-						<label for="posts_title_bg_color">Posts Title Backgroud Color</label>
+						<label for="posts_title_bg_color"><?php _e('Posts Title Backgroud Color', 'rps'); ?></label>
 						<input type="text" name="rps_post_title_bg_color" value="<?php echo $post_title_bg_color; ?>" size="40" />
-						<span>ex : ef4534</span>
+						<span><?php _e('ex', 'rps'); ?> : ef4534</span>
 					</li>
 					<li>
-						<label for="set_link_text">Set Link Text</label>
+						<label for="set_link_text"><?php _e('Set Link Text', 'rps'); ?></label>
 						<input type="text" name="rps_link_text" value="<?php echo $link_text; ?>" size="40" />
-						<span>ex : [more]</span>
+						<span><?php _e('ex : [more]', 'rps'); ?></span>
 					</li>
 				</ul>
 			</div>
 			<div class="slide-opt-left">
 				<ul>
 					<li class="post_date">
-						<label for="show_post_date">Post Date Settings</label>
-						Show &nbsp; <input type="checkbox" name="rps_show_post_date" value="yes" <?php if ($show_post_date=="yes") { echo 'checked="checked"';}  ?> />
-						<span></span>Text Before Date <br/><input type="text" name="rps_post_date_text" value="<?php echo $post_date_text; ?>" size="30" />
-						<span>ex : Posted On</span>
-						Date Format <br/><input type="text" name="rps_post_date_format" value="<?php echo $post_date_format; ?>" size="30" />
-						<span>ex. F j, Y<br/>(F = Month name | j = Day of the month <br/> S = ordinal suffix for the day of the month | Y = Year)</span>
+						<label for="show_post_date"><?php _e('Post Date Settings', 'rps'); ?></label>
+						<?php _e('Show', 'rps'); ?> &nbsp; <input type="checkbox" name="rps_show_post_date" value="yes" <?php if ($show_post_date=="yes") { echo 'checked="checked"';}  ?> />
+						<span></span><?php _e('Text Before Date', 'rps'); ?> <br/><input type="text" name="rps_post_date_text" value="<?php echo $post_date_text; ?>" size="30" />
+						<span><?php _e('ex : Posted On', 'rps'); ?></span>
+						<?php _e('Date Format', 'rps'); ?> <br/><input type="text" name="rps_post_date_format" value="<?php echo $post_date_format; ?>" size="30" />
+						<span><?php _e('ex. F j, Y', 'rps'); ?><br/><?php _e('(F = Month name | j = Day of the month', 'rps'); ?> <br/> <?php _e('S = ordinal suffix for the day of the month | Y = Year)', 'rps'); ?></span>
 					</li>
 				</ul>
 			</div>
@@ -237,15 +239,15 @@
 	</div>
 	<div class="metabox-holder">
 		<div class="postbox"> 
-			<h3>Custom CSS</h3>	
+			<h3><?php _e('Custom CSS', 'rps'); ?></h3>	
 			<div class="div-left wd2 space">
-				<label>Modify the css to suite your needs.</label><br/><br/>
+				<label><?php _e('Modify the css to suite your needs.', 'rps'); ?></label><br/><br/>
 				<textarea name="rps_custom_css" rows="15" cols="70" /><?php echo stripslashes($custom_css); ?></textarea>
 			</div>
 			<div class="div-left wd2 space">
-				<br/><br/>Ex. <br/>
+				<br/><br/><?php _e('Ex.', 'rps'); ?> <br/>
 				<br/>
-				To change the color of post date.<br/><br/>
+				<?php _e('To change the color of post date.', 'rps'); ?><br/><br/>
 				#rps .post-date{<br/><br/>
 				&nbsp;&nbsp;&nbsp;color:#A92D20;<br/><br/>
 				}
@@ -254,6 +256,6 @@
 			<div class="div-clear"></div>
 		</div>
 	</div>
-	<input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e('Save Changes') ?>" />
+	<input type="submit" name="Submit" class="button-primary" value="<?php _e('Save Changes','rps') ?>" />
 </form>
 </div>
