@@ -3,8 +3,8 @@ Contributors: nehagoel
 Donate link: http://recent-posts-slider.com/donate/
 Tags: posts, recent, recent posts, recent post, scroll, slider, most recent, posts slider, most recent posts
 Requires at least: 2.9.1
-Tested up to: 3.5
-Stable tag: 0.7
+Tested up to: 3.5.1
+Stable tag: 0.7.1
 Author URI: http://aboutneha.com/
 
 Recent posts slider displays your blog's recent posts using slider.
