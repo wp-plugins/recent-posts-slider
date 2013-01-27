@@ -5,6 +5,7 @@ Tags: posts, recent, recent posts, recent post, scroll, slider, most recent, pos
 Requires at least: 2.9.1
 Tested up to: 3.5
 Stable tag: 0.7
+Author URI: http://aboutneha.com/
 
 Recent posts slider displays your blog's recent posts using slider.
 
