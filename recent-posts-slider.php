@@ -3,7 +3,7 @@
 Plugin Name: Recent Posts Slider
 Plugin URI: http://recent-posts-slider.com
 Description: Recent Posts Slider displays your blog's recent posts either with excerpt or thumbnail images using slider.
-Version: 0.7
+Version: 0.7.1
 Author: Neha Goel
 */
 
@@ -41,7 +41,7 @@ add_action('wp_print_styles', 'rps_add_style');
 add_action('wp_head', 'rps_add_custom_style');
 add_action('init', 'rps_add_script');
 
-add_shortcode('rps', 'rps_show');
+add_shortcode('rps', 'rps_show_shortcode');
 
 // register Rps widget
 add_action('widgets_init', create_function('', 'return register_widget("RpsWidget");'));
@@ -277,18 +277,30 @@ function rps_add_script() {
 	}
 }
 
+function rps_show_shortcode($rps_atts) {
+	
+	extract(shortcode_atts(array(
+		'category_ids' => '',
+		'total_posts' => '',
+		'post_include_ids' => '',
+		'post_exclude_ids' => '',
+	), $rps_atts));
+	
+	return rps_show( $category_ids, $total_posts, $post_include_ids, $post_exclude_ids );
+}
+
 /** To show slider 
  * @return output
 */
-function rps_show() {	
+function rps_show( $category_ids=null, $total_posts=null, $post_include_ids=null, $post_exclude_ids=null ) {	
 	$width = get_option('rps_width');
 	$height = get_option('rps_height');
 	$post_per_slide = get_option('rps_post_per_slide');
-	$total_posts = get_option('rps_total_posts');
+	if( empty($total_posts) ) $total_posts = get_option('rps_total_posts');
 	$slider_content = get_option('rps_slider_content');
-	$category_ids = get_option('rps_category_ids');
-	$post_include_ids = get_option('rps_post_include_ids');
-	$post_exclude_ids = get_option('rps_post_exclude_ids');
+	if( empty($category_ids) ) $category_ids = get_option('rps_category_ids');
+	if( empty($post_include_ids) ) $post_include_ids = get_option('rps_post_include_ids');
+	if( empty($post_exclude_ids) ) $post_exclude_ids = get_option('rps_post_exclude_ids');
 	$post_title_color = get_option('rps_post_title_color');
 	$post_title_bg_color = get_option('rps_post_title_bg_color');
 	$slider_speed = get_option('rps_slider_speed');
@@ -577,25 +589,42 @@ class RpsWidget extends WP_Widget {
     function widget($args, $instance) {		
         extract( $args );
         $title = apply_filters('widget_title', $instance['title']);
-	echo $before_widget;
+        $category_ids = apply_filters('widget_title', $instance['category_ids']);
+        $total_posts = apply_filters('widget_title', $instance['total_posts']);
+        $post_include_ids = apply_filters('widget_title', $instance['post_include_ids']);
+        $post_exclude_ids = apply_filters('widget_title', $instance['post_exclude_ids']);
+		echo $before_widget;
         if ( $title )
-		echo $before_title . $title . $after_title; 
-		if (function_exists('rps_show')) echo rps_show(); 
+			echo $before_title . $title . $after_title; 
+		if (function_exists('rps_show')) 
+			echo rps_show($category_ids, $total_posts, $post_include_ids, $post_exclude_ids); 
 		echo $after_widget; 
     }
 
     /** @see WP_Widget::update */
     function update($new_instance, $old_instance) {				
-	$instance = $old_instance;
-	$instance['title'] = strip_tags($new_instance['title']);
+		$instance = $old_instance;
+		$instance['title'] = strip_tags($new_instance['title']);
+		$instance['category_ids'] = strip_tags($new_instance['category_ids']);
+		$instance['total_posts'] = strip_tags($new_instance['total_posts']);
+		$instance['post_include_ids'] = strip_tags($new_instance['post_include_ids']);
+		$instance['post_exclude_ids'] = strip_tags($new_instance['post_exclude_ids']);
         return $instance;
     }
 
     /** @see WP_Widget::form */
     function form($instance) {				
         $title = esc_attr($instance['title']);
+        $category_ids = esc_attr($instance['category_ids']);
+        $total_posts = esc_attr($instance['total_posts']);
+        $post_include_ids = esc_attr($instance['post_include_ids']);
+        $post_exclude_ids = esc_attr($instance['post_exclude_ids']);
         ?>
             <p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:','rps'); ?> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" /></label></p>
+			<p><label for="<?php echo $this->get_field_id('category_ids'); ?>"><?php _e('Category Ids (Comma seperated):','rps'); ?> <input class="widefat" id="<?php echo $this->get_field_id('category_ids'); ?>" name="<?php echo $this->get_field_name('category_ids'); ?>" type="text" value="<?php echo $category_ids; ?>" /></label></p>
+			<p><label for="<?php echo $this->get_field_id('total_posts'); ?>"><?php _e('Total Posts:','rps'); ?> <input class="widefat" id="<?php echo $this->get_field_id('total_posts'); ?>" name="<?php echo $this->get_field_name('total_posts'); ?>" type="text" value="<?php echo $total_posts; ?>" /></label></p>
+			<p><label for="<?php echo $this->get_field_id('post_include_ids'); ?>"><?php _e('Posts to include (Comma seperated):','rps'); ?> <input class="widefat" id="<?php echo $this->get_field_id('post_include_ids'); ?>" name="<?php echo $this->get_field_name('post_include_ids'); ?>" type="text" value="<?php echo $post_include_ids; ?>" /></label></p>
+			<p><label for="<?php echo $this->get_field_id('post_exclude_ids'); ?>"><?php _e('Posts to exclude (Comma seperated):','rps'); ?> <input class="widefat" id="<?php echo $this->get_field_id('post_exclude_ids'); ?>" name="<?php echo $this->get_field_name('post_exclude_ids'); ?>" type="text" value="<?php echo $post_exclude_ids; ?>" /></label></p>
         <?php 
     }
 

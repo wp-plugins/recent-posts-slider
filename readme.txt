@@ -37,8 +37,10 @@ Now go to **Settings** and then **Recent Posts Slider** to configure any options
 
 In order to display the recent posts slider, you have three options
 
-1. Simply place `<?php if (function_exists('rps_show')) echo rps_show(); ?>` in your theme. 
-1. Add the shortcode '[rps]'.
+1. Simply place `<?php if (function_exists('rps_show')) echo rps_show(); ?>` in your theme 
+or use rps_show( $category_ids, $total_posts, $post_include_ids, $post_exclude_ids ) to have different slider on differet pages;
+1. Add the shortcode simply '[rps]' 
+or '[rps category_ids="2,3"  total_posts="2" post_include_ids="1" post_exclude_ids="2"]'.
 1. Using widget.
 
 == Frequently Asked Questions ==
@@ -55,6 +57,9 @@ Contact me at http://recent-posts-slider.com/contact
 1. Configuration page
 
 == Changelog ==
+
+= v0.7.1 =
+* Customize the widget slider according to category, post ids & total no. of posts.
 
 = v0.7 =
 * Full internationalization is now possible
