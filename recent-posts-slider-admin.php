@@ -111,6 +111,15 @@
 		<a href="http://rps.eworksphere.com/contact/" target="_blank"><?php _e('contact', 'rps'); ?></a> <?php _e('me.', 'rps'); ?>
 	<br/><?php _e('And feel free to', 'rps'); ?> <a href="http://rps.eworksphere.com/donate/" target="_blank"><?php _e('donate', 'rps'); ?></a> <?php _e('for this plugin', 'rps'); ?> :).
 </p>
+<?php
+	$active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'settings';
+	if(isset($_GET['tab'])) $active_tab = $_GET['tab'];
+?>
+<h2 class="nav-tab-wrapper">
+	<a href="<?php echo admin_url('options-general.php').'?page='.$_GET['page']; ?>&tab=settings" class="nav-tab <?php echo $active_tab == 'settings' ? 'nav-tab-active' : ''; ?>"><?php _e('Settings', 'rps'); ?></a>
+	<a href="<?php echo admin_url('options-general.php').'?page='.$_GET['page']; ?>&tab=pro" class="nav-tab <?php echo $active_tab == 'pro' ? 'nav-tab-active' : ''; ?>"><?php _e('Pro', 'rps'); ?></a>
+</h2>
+<?php if( $_GET['tab'] == "settings" ){ ?>
 <form name="rps_form" method="post" action="<?php echo admin_url('options-general.php').'?page='.$_GET['page']; ?>">
 	<input type="hidden" name="rps_opt_hidden" value="Y">
 	<div class="metabox-holder">
@@ -258,4 +267,62 @@
 	</div>
 	<input type="submit" name="Submit" class="button-primary" value="<?php _e('Save Changes','rps') ?>" />
 </form>
+<?php  }else{ ?>
+<br/>
+<p class="pro_text">Premium version is available at just <span class="pro_price">$9</span> <a href="http://recent-posts-slider.com/rps-store/" target="_blank">(Buy via PayPal or CreditCard)</a></p>
+<p class="pro_text">Check preview <a href="http://www.recent-posts-slider.com/rps-premium-preview/" target="_blank">here</a> & try it by yourself <a href="http://www.recent-posts-slider.com/rps-pro-demo/wp-login.php" target="_blank">here</a> Username : demo - Password : rpsdemo</p>
+<p class="pro_text">Having features as listed below:</p>
+<table class="widefat rps_pro_table">
+	<tr>
+		<th width="60%"></th>
+		<th width="20%">Lite</th>
+		<th width="20%">Pro</th>
+	</tr>
+	<tr>
+		<td class="left">Showcase your Recent Posts using slider</td>
+		<td><?php echo '<img src="' . plugins_url( 'img/yes.png' , __FILE__ ) . '" > '; ?></td>
+		<td><?php echo '<img src="' . plugins_url( 'img/yes.png' , __FILE__ ) . '" > '; ?></td>
+	</tr>
+	<tr>
+		<td class="left">Customization Options</td>
+		<td><?php echo '<img src="' . plugins_url( 'img/yes.png' , __FILE__ ) . '" > '; ?></td>
+		<td><?php echo '<img src="' . plugins_url( 'img/yes.png' , __FILE__ ) . '" > '; ?><br/><span class="normal">(With few more)</span></td>
+	</tr>
+	<tr>
+		<td class="left">Sliding Effects (Fade & Slide)</td>
+		<td><?php echo '<img src="' . plugins_url( 'img/no.png' , __FILE__ ) . '" > '; ?></td>
+		<td><?php echo '<img src="' . plugins_url( 'img/yes.png' , __FILE__ ) . '" > '; ?></td>
+	</tr>
+	<tr>
+		<td class="left">Thumb of External Images</td>
+		<td><?php echo '<img src="' . plugins_url( 'img/no.png' , __FILE__ ) . '" > '; ?></td>
+		<td><?php echo '<img src="' . plugins_url( 'img/yes.png' , __FILE__ ) . '" > '; ?></td>
+	</tr>
+	<tr>
+		<td class="left">Responsive</td>
+		<td><?php echo '<img src="' . plugins_url( 'img/no.png' , __FILE__ ) . '" > '; ?></td>
+		<td><?php echo '<img src="' . plugins_url( 'img/yes.png' , __FILE__ ) . '" > '; ?></td>
+	</tr>
+	<tr>
+		<td class="left">Multiple slider on a same page of same width & height with different category & posts setting</td>
+		<td><?php echo '<img src="' . plugins_url( 'img/no.png' , __FILE__ ) . '" > '; ?></td>
+		<td><?php echo '<img src="' . plugins_url( 'img/yes.png' , __FILE__ ) . '" > '; ?></td>
+	</tr>
+	<tr>
+		<td class="left">Random Posts</td>
+		<td><?php echo '<img src="' . plugins_url( 'img/no.png' , __FILE__ ) . '" > '; ?></td>
+		<td><?php echo '<img src="' . plugins_url( 'img/yes.png' , __FILE__ ) . '" > '; ?></td>
+	</tr>
+	<tr>
+		<td class="left">Support</td>
+		<td><?php echo '<img src="' . plugins_url( 'img/yes.png' , __FILE__ ) . '" > '; ?></td>
+		<td><?php echo '<img src="' . plugins_url( 'img/yes.png' , __FILE__ ) . '" > '; ?><br/><span class="normal">(On Priority)</span></td>
+	</tr>
+	<tr>
+		<td class="left">Free Updates</td>
+		<td><?php echo '<img src="' . plugins_url( 'img/yes.png' , __FILE__ ) . '" > '; ?></td>
+		<td><?php echo '<img src="' . plugins_url( 'img/yes.png' , __FILE__ ) . '" > '; ?></td>
+	</tr>
+</table>
+<?php } ?>
 </div>
