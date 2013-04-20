@@ -21,7 +21,7 @@ If you have a feature that you would like to get added in future versions, feel 
 
 If you find it useful please don't forget to rate this plugin.
 
-Upgrade to [RPS Pro](http://recent-posts-slider.com/rps-store/) to get the features listed below
+Upgrade to RPS Pro http://recent-posts-slider.com/rps-store/ to get the features listed below
 * More Customization options for pagination position, style & arrow
 * Sliding Effects (Fade & Slide)
 * Thumb of External Images
