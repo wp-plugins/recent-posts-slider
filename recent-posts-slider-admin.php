@@ -119,7 +119,7 @@
 	<a href="<?php echo admin_url('options-general.php').'?page='.$_GET['page']; ?>&tab=settings" class="nav-tab <?php echo $active_tab == 'settings' ? 'nav-tab-active' : ''; ?>"><?php _e('Settings', 'rps'); ?></a>
 	<a href="<?php echo admin_url('options-general.php').'?page='.$_GET['page']; ?>&tab=pro" class="nav-tab <?php echo $active_tab == 'pro' ? 'nav-tab-active' : ''; ?>"><?php _e('Pro', 'rps'); ?></a>
 </h2>
-<?php if( $_GET['tab'] == "settings" ){ ?>
+<?php if( $_GET['tab'] == "settings" || $_GET['tab']=='' ){ ?>
 <form name="rps_form" method="post" action="<?php echo admin_url('options-general.php').'?page='.$_GET['page']; ?>">
 	<input type="hidden" name="rps_opt_hidden" value="Y">
 	<div class="metabox-holder">
