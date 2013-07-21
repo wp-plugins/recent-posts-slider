@@ -3,7 +3,7 @@
 Plugin Name: Recent Posts Slider
 Plugin URI: http://recent-posts-slider.com
 Description: Recent Posts Slider displays your blog's recent posts either with excerpt or thumbnail images using slider.
-Version: 0.7.1
+Version: 0.7.2
 Author: Neha Goel
 */
 
@@ -472,11 +472,11 @@ $output .= '<div id="rps">
 		for ( $i = 1; $i <= $total_posts; $i+=$post_per_slide ) {
 			$output .= '<div class="slide">';
 					for ( $j = 1; $j <= $post_per_slide; $j++ ) {
-						$output .= '<div class="col"><p class="post-title"><a href="'.$post_details[$p]['post_permalink'].'"><span>'.$post_details[$p]['post_title'].'</span></a></p>';
+						$output .= '<div class="col"><p class="post-title"><a href="'.$post_details[$p]['post_permalink'].'"><span>'.__($post_details[$p]['post_title'], 'rps').'</span></a></p>';
 						if ( $slider_content == 2 ){
-							$output .= '<p class="slider-content">'.$post_details[$p]['post_excerpt'];
+							$output .= '<p class="slider-content">'.__($post_details[$p]['post_excerpt'], 'rps');
 							if($show_post_date){
-								$output .= '<div class="post-date">'.$post_date_text.' '.$post_details[$p]['post_date'].'</div>';
+								$output .= '<div class="post-date">'.__($post_date_text, 'rps').' '.__($post_details[$p]['post_date'], 'rps').'</div>';
 							}
 							$output .= '</p></div>';
 						}elseif ( $slider_content == 1 ){
@@ -484,11 +484,11 @@ $output .= '<div id="rps">
 							if( !empty($post_details[$p]['post_first_img']['0']) ){
 								$rps_img_src_path = $post_details[$p]['post_first_img']['0'];
 								if(!empty($rps_img_src_path)){
-									$output .= '<a href="'.$post_details[$p]['post_permalink'].'"><center><img src="'.$rps_img_src_path.'" alt="'.$post_details[$p]['post_title'].'" /></center></a>';
+									$output .= '<a href="'.$post_details[$p]['post_permalink'].'"><center><img src="'.$rps_img_src_path.'" alt="'.__($post_details[$p]['post_title'], 'rps').'" /></center></a>';
 								}
 							}
 							if($show_post_date){
-								$output .= '<div class="post-date">'.$post_date_text.' '.$post_details[$p]['post_date'].'</div>';
+								$output .= '<div class="post-date">'.__($post_date_text, 'rps').' '.__($post_details[$p]['post_date'], 'rps').'</div>';
 							}
 							$output .= '</p></div>';			
 						}elseif ( $slider_content == 3 ){
@@ -496,12 +496,12 @@ $output .= '<div id="rps">
 							if( !empty($post_details[$p]['post_first_img']['0']) || !empty($post_details[$p]['post_excerpt'])){
 								$rps_img_src_path = $post_details[$p]['post_first_img']['0'];
 								if(!empty($rps_img_src_path)){
-									$output .= '<a href="'.$post_details[$p]['post_permalink'].'"><img src="'.$rps_img_src_path.'" alt="'.$post_details[$p]['post_title'].'" align="left" /></a>';
+									$output .= '<a href="'.$post_details[$p]['post_permalink'].'"><img src="'.$rps_img_src_path.'" alt="'.__($post_details[$p]['post_title'], 'rps').'" align="left" /></a>';
 								}
-								$output .= $post_details[$p]['post_excerpt'];
+								$output .= __($post_details[$p]['post_excerpt'], 'rps');
 							}
 							if($show_post_date){
-								$output .= '<div class="post-date">'.$post_date_text.' '.$post_details[$p]['post_date'].'</div>';
+								$output .= '<div class="post-date">'.__($post_date_text, 'rps').' '.__($post_details[$p]['post_date'], 'rps').'</div>';
 							}
 							$output .= '</p></div>';			
 						}

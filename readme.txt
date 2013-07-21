@@ -3,8 +3,8 @@ Contributors: nehagoel
 Donate link: http://recent-posts-slider.com/donate/
 Tags: posts, recent, recent posts, recent post, scroll, slider, most recent, posts slider, most recent posts
 Requires at least: 2.9.1
-Tested up to: 3.5.1
-Stable tag: 0.7.1
+Tested up to: 3.5.2
+Stable tag: 0.7.2
 
 Recent posts slider displays your blog's recent posts using slider.
 
@@ -24,6 +24,7 @@ If you find it useful please don't forget to rate this plugin.
 Upgrade to RPS Pro http://recent-posts-slider.com/rps-store/ to get the features listed below
 
 1. More Customization options for pagination position, style & arrow
+1. Ready to use custom layouts [Theme 1 Preview](http://www.recent-posts-slider.com/rps-premium-preview-theme-1/)
 1. Sliding Effects (Fade & Slide)
 1. Thumb of External Images
 1. Responsive
@@ -66,6 +67,9 @@ Contact me at http://recent-posts-slider.com/contact
 1. Configuration page
 
 == Changelog ==
+
+= v0.7.2 =
+* Internationalization + info update
 
 = v0.7.1 =
 * Customize the widget slider according to category, post ids & total no. of posts.

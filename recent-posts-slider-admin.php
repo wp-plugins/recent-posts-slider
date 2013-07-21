@@ -270,7 +270,7 @@
 <?php  }else{ ?>
 <br/>
 <p class="pro_text">Premium version is available at just <span class="pro_price">$9</span> <a href="http://recent-posts-slider.com/rps-store/" target="_blank">(Buy via PayPal or CreditCard)</a></p>
-<p class="pro_text">Check preview <a href="http://www.recent-posts-slider.com/rps-premium-preview/" target="_blank">here</a> & try it by yourself <a href="http://www.recent-posts-slider.com/rps-pro-demo/wp-login.php" target="_blank">here</a> Username : demo - Password : rpsdemo</p>
+<p class="pro_text">Check theme 1's preview <a href="http://www.recent-posts-slider.com/rps-premium-preview-theme-1/" target="_blank">here</a> & default <a href="http://www.recent-posts-slider.com/rps-premium-preview/" target="_blank">here</a> & try it by yourself <a href="http://www.recent-posts-slider.com/rps-pro-demo/wp-login.php" target="_blank">here</a> Username : demo - Password : rpsdemo</p>
 <p class="pro_text">Having features as listed below:</p>
 <table class="widefat rps_pro_table">
 	<tr>
@@ -287,6 +287,16 @@
 		<td class="left">Customization Options</td>
 		<td><?php echo '<img src="' . plugins_url( 'img/yes.png' , __FILE__ ) . '" > '; ?></td>
 		<td><?php echo '<img src="' . plugins_url( 'img/yes.png' , __FILE__ ) . '" > '; ?><br/><span class="normal">(With few more)</span></td>
+	</tr>
+	<tr>
+		<td class="left">Ready to use customized layouts</td>
+		<td><?php echo '<img src="' . plugins_url( 'img/no.png' , __FILE__ ) . '" > '; ?></td>
+		<td><?php echo '<img src="' . plugins_url( 'img/yes.png' , __FILE__ ) . '" > '; ?><br/>
+			<span class="normal">
+				<strong><a target="_blank" href="http://www.recent-posts-slider.com/rps-premium-preview-theme-1">(Theme 1)</a><br/>
+				<a target="_blank" href="http://www.recent-posts-slider.com/rps-premium-preview">(Default)</a></strong>
+			</span>
+		</td>
 	</tr>
 	<tr>
 		<td class="left">Sliding Effects (Fade & Slide)</td>
