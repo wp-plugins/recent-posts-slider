@@ -3,7 +3,7 @@
 Plugin Name: Recent Posts Slider
 Plugin URI: http://recent-posts-slider.com
 Description: Recent Posts Slider displays your blog's recent posts either with excerpt or thumbnail images using slider.
-Version: 0.7.2
+Version: 0.7.3
 Author: Neha Goel
 */
 
@@ -45,6 +45,13 @@ add_shortcode('rps', 'rps_show_shortcode');
 
 // register Rps widget
 add_action('widgets_init', create_function('', 'return register_widget("RpsWidget");'));
+
+// add color picker
+add_action( 'admin_enqueue_scripts', 'rps_enqueue_color_picker' );
+function rps_enqueue_color_picker( ) {
+    wp_enqueue_style( 'wp-color-picker' );
+    wp_enqueue_script( 'rps-color-picker-script', plugins_url('js/rps.js', __FILE__ ), array( 'wp-color-picker' ), false, true );
+}
 
 /** 
 *Set the default options while activating the pugin & create thumbnails of first image of all the posts
@@ -325,12 +332,10 @@ function rps_show( $category_ids=null, $total_posts=null, $post_include_ids=null
 	}
 	if ( empty($post_title_color) ){
 		$post_title_color = "#666";
-	}else{
-		$post_title_color = "#".$post_title_color;
 	}
 	$post_title_bg_color_js = "";
 	if ( !empty($post_title_bg_color) ){
-		$post_title_bg_color_js = "#".$post_title_bg_color;
+		$post_title_bg_color_js = $post_title_bg_color;
 	}
 	$excerpt_length = '';
 	$excerpt_length = abs( (($width-40)/20) * (($height-55)/15) );

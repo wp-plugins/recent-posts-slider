@@ -196,7 +196,7 @@
 					</li>
 					<li>
 						<label for="posts_title_color"><?php _e('Posts Title Color', 'rps'); ?></label>
-						<input type="text" name="rps_post_title_color" value="<?php echo $post_title_color; ?>" size="40" />
+						<input type="text" name="rps_post_title_color" value="<?php echo $post_title_color; ?>" size="40" class="rps-color-picker" data-default-color="#666666" />
 						<span><?php _e('ex', 'rps'); ?> : ef4534</span>
 					</li>
 					<li>
@@ -221,7 +221,7 @@
 					</li>
 					<li>
 						<label for="posts_title_bg_color"><?php _e('Posts Title Backgroud Color', 'rps'); ?></label>
-						<input type="text" name="rps_post_title_bg_color" value="<?php echo $post_title_bg_color; ?>" size="40" />
+						<input type="text" name="rps_post_title_bg_color" value="<?php echo $post_title_bg_color; ?>" size="40" class="rps-color-picker" />
 						<span><?php _e('ex', 'rps'); ?> : ef4534</span>
 					</li>
 					<li>
@@ -293,8 +293,8 @@
 		<td><?php echo '<img src="' . plugins_url( 'img/no.png' , __FILE__ ) . '" > '; ?></td>
 		<td><?php echo '<img src="' . plugins_url( 'img/yes.png' , __FILE__ ) . '" > '; ?><br/>
 			<span class="normal">
-				<strong><a target="_blank" href="http://www.recent-posts-slider.com/rps-premium-preview-theme-1">(Theme 1)</a><br/>
-				<a target="_blank" href="http://www.recent-posts-slider.com/rps-premium-preview">(Default)</a></strong>
+				<strong><a target="_blank" href="http://www.recent-posts-slider.com/rps-premium-preview-theme-1">(Theme 1's Preview)</a><br/>
+				<a target="_blank" href="http://www.recent-posts-slider.com/rps-premium-preview">(Default Theme's Preview )</a></strong>
 			</span>
 		</td>
 	</tr>

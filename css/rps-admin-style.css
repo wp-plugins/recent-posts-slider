@@ -46,3 +46,7 @@
 .space{
 	padding:10px;
 }
+
+.slide-opt-left  .iris-picker{
+	z-index:1;
+}
