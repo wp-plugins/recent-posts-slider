@@ -3,8 +3,8 @@ Contributors: nehagoel
 Donate link: http://recent-posts-slider.com/donate/
 Tags: posts, recent, recent posts, recent post, scroll, slider, most recent, posts slider, most recent posts
 Requires at least: 2.9.1
-Tested up to: 3.6
-Stable tag: 0.7.3
+Tested up to: 3.7.1
+Stable tag: 0.7.4
 
 Recent posts slider displays your blog's recent posts using slider.
 
@@ -53,6 +53,8 @@ or use rps_show( $category_ids, $total_posts, $post_include_ids, $post_exclude_i
 or '[rps category_ids="2,3"  total_posts="2" post_include_ids="1" post_exclude_ids="2"]'.
 1. Using widget.
 
+Check admin setting details [here](http://recent-posts-slider.com/installation-how-to-use/)
+
 == Frequently Asked Questions ==
 
 = Why only few characters display in post title? =
@@ -67,6 +69,9 @@ Contact me at http://recent-posts-slider.com/contact
 1. Configuration page
 
 == Changelog ==
+
+= v0.7.4 =
+* Help added
 
 = v0.7.3 =
 * Color Picker added

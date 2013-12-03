@@ -106,10 +106,11 @@
 <div class="wrap">
 <?php echo "<h2>" . __( 'Recent Posts Slider Options', 'rps') . "</h2>"; ?>
 <p>
-	<?php 
-		_e('In this page you can customize the plugin according to your needs. Having any issues', 'rps'); ?>
-		<a href="http://rps.eworksphere.com/contact/" target="_blank"><?php _e('contact', 'rps'); ?></a> <?php _e('me.', 'rps'); ?>
+	<?php _e('In this page you can customize the plugin according to your needs. Having any issues', 'rps'); ?>
+		<a href="http://rps.eworksphere.com/contact/" target="_blank"><?php _e('contact', 'rps'); ?></a> <?php _e('me1.', 'rps'); ?>
 	<br/><?php _e('And feel free to', 'rps'); ?> <a href="http://rps.eworksphere.com/donate/" target="_blank"><?php _e('donate', 'rps'); ?></a> <?php _e('for this plugin', 'rps'); ?> :).
+	<br/><br/>
+	<a href="http://recent-posts-slider.com/installation-how-to-use/" target="_blank"><?php _e('Check our how to use instructions here.', 'rps'); ?></a>
 </p>
 <?php
 	$active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'settings';
