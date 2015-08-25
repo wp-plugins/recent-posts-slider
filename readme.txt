@@ -3,8 +3,8 @@ Contributors: nehagoel
 Donate link: http://recent-posts-slider.com/donate/
 Tags: posts, recent, recent posts, recent post, scroll, slider, most recent, posts slider, most recent posts
 Requires at least: 2.9.1
-Tested up to: 4.2.2
-Stable tag: 0.8
+Tested up to: 4.3
+Stable tag: 0.9
 
 Recent posts slider displays your blog's recent posts using slider.
 
@@ -63,7 +63,7 @@ Contact me at http://recent-posts-slider.com/contact
 1. Configuration page
 
 == Changelog ==
-
+= v0.9 =* WP 4.3 compatibility fixes
 = v0.7.8 =
 * Code improvement
 = v0.7.5 =
